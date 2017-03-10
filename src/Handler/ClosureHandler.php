@@ -4,8 +4,6 @@ namespace TaskFlux\Handler;
 
 use Auryn\Injector;
 use Workflux\Param\InputInterface;
-use Workflux\Param\Output;
-use Workflux\Param\OutputInterface;
 
 class ClosureHandler implements HandlerInterface
 {
@@ -22,9 +20,9 @@ class ClosureHandler implements HandlerInterface
         $this->injector = $injector;
     }
 
-    public function execute(InputInterface $input): OutputInterface
+    public function execute(InputInterface $input): array
     {
         $output = $this->injector->execute($this->handler, [ ':input' => $input ]);
-        return new Output($this->name, (array)$output);
+        return (array)$output;
     }
 }

@@ -34,10 +34,10 @@ $tf->task('start', function() {
 $tf->task('process', function(InputInterface $input, Environment $env) {
     echo $input->get('incoming').PHP_EOL;
     echo $env->get('processed').PHP_EOL;
-    return [ 'success' => 'yes' ];
+    return [ 'success' => true ];
 })
 ->input([ 'string' => 'incoming' ])
-->output([ 'string' => 'success' ]);
+->output([ 'bool' => 'success' ]);
 
 $tf->task('cleanup', function(Environment $env, InputInterface $input) {
     echo 'value of success: '.$input->get('success').PHP_EOL;

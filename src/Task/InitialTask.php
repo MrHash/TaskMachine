@@ -4,7 +4,6 @@ namespace TaskFlux\Task;
 
 use Workflux\State\StateTrait;
 use Workflux\Param\InputInterface;
-use Workflux\Param\OutputInterface;
 use Workflux\State\StateInterface;
 
 final class InitialTask implements StateInterface
@@ -13,7 +12,7 @@ final class InitialTask implements StateInterface
 
     use StateTrait;
 
-    public function execute(InputInterface $input): OutputInterface
+    private function generateOutputParams(InputInterface $input): array
     {
         return $this->handler->execute($input);
     }

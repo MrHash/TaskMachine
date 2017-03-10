@@ -16,9 +16,9 @@ class CustomHandler implements HandlerInterface
         $this->environment = $environment;
     }
 
-    public function execute(InputInterface $input): OutputInterface
+    public function execute(InputInterface $input): array
     {
         echo $this->environment->get('custom').PHP_EOL;
-        return new Output('custom', ['some' => 'thing']);
+        return ['some' => 'thing'];
     }
 }
