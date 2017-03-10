@@ -27,16 +27,4 @@ class MachineBuilderStack extends BuilderStack
         $this->input_schema->{current($input)}->type(key($input));
         return $this;
     }
-
-    public function initial()
-    {
-        parent::__call('initial', [true]);
-        return $this;
-    }
-
-    public function final()
-    {
-        parent::__call('final', [true])->transitions([]);
-        return $this->rewind();
-    }
 }
