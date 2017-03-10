@@ -1,0 +1,15 @@
+{
+    "name": "mrhash/taskflux",
+    "description": "Workflux FSM based task pipeline builder",
+    "type": "library",
+    "require": {
+        "shrink0r/workflux": "^1.0",
+        "rdlowrey/auryn": "^1.4"
+    },
+    "license": "MPL-2.0",
+    "autoload": {
+        "psr-4": {
+            "TaskFlux\\": "src/"
+        }
+    }
+}
