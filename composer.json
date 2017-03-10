@@ -3,6 +3,7 @@
     "description": "Workflux FSM based task pipeline builder",
     "type": "library",
     "require": {
+        "php": "^7.0",
         "shrink0r/workflux": "^1.0",
         "rdlowrey/auryn": "^1.4"
     },
