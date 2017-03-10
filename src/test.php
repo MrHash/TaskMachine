@@ -33,7 +33,7 @@ $tf->task('cleanup', function(Environment $env) {
 
 $tf->task('finish', CustomHandler::class);
 
-// Define pipeline
+// Define machine
 $tf->pipeline(
     'transcoder',
     [
