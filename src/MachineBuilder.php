@@ -10,4 +10,9 @@ class MachineBuilder extends Builder
     {
         return $this->states->{$name};
     }
+
+    public function getStackImplementor()
+    {
+        return MachineBuilderStack::CLASS;
+    }
 }

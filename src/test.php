@@ -33,20 +33,10 @@ $tf->task('cleanup', function(Environment $env) {
 $tf->task('finish', CustomHandler::class);
 
 $tf->machine('transcoder')
-    ->rewind()
-    ->task('start')
-        ->initial(true)
-        ->transitions([ 'process' => null ])
-    ->rewind()
-    ->task('process')
-        ->transitions([ 'cleanup' => null ])
-    ->rewind()
-    ->task('cleanup')
-        ->transitions([ 'finish' => null ])
-    ->rewind()
-    ->task('finish')
-        ->final(true)
-        ->transitions([]);
+    ->task('start')->initial(true)->then('process')
+    ->task('process')->then('cleanup')
+    ->task('cleanup')->then('finish')
+    ->task('finish')->final(true)->transitions([]);
 
 $output = $tf->run('transcoder');
 print_r($output->toArray(), true);

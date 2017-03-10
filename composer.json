@@ -2,12 +2,21 @@
     "name": "mrhash/taskflux",
     "description": "Workflux FSM based task pipeline builder",
     "type": "library",
+    "license": "MPL-2.0",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:MrHash/php-schema.git"
+        }
+    ],
     "require": {
         "php": "^7.0",
         "shrink0r/workflux": "^1.0",
+        "shrink0r/php-schema": "dev-master as 0.3.0",
         "rdlowrey/auryn": "^1.4"
     },
-    "license": "MPL-2.0",
+    "prefer-stable": true,
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "TaskFlux\\": "src/"
