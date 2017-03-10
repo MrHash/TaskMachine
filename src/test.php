@@ -33,10 +33,10 @@ $tf->task('cleanup', function(Environment $env) {
 $tf->task('finish', CustomHandler::class);
 
 $tf->machine('transcoder')
-    ->task('start')->initial(true)->then('process')
+    ->task('start')->initial()->then('process')
     ->task('process')->then('cleanup')
     ->task('cleanup')->then('finish')
-    ->task('finish')->final(true)->transitions([]);
+    ->task('finish')->final();
 
 $output = $tf->run('transcoder');
 print_r($output->toArray(), true);

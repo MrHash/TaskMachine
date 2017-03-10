@@ -10,4 +10,16 @@ class MachineBuilderStack extends BuilderStack
     {
         return $this->transitions([ $target => null ])->rewind();
     }
+
+    public function initial()
+    {
+        parent::__call('initial', [true]);
+        return $this;
+    }
+
+    public function final()
+    {
+        parent::__call('final', [true])->transitions([]);
+        return $this;
+    }
 }

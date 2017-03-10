@@ -15,4 +15,9 @@ class MachineBuilder extends Builder
     {
         return MachineBuilderStack::CLASS;
     }
+
+    public function build(array $defaults = [])
+    {
+        return parent::build($defaults);
+    }
 }
