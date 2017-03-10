@@ -38,14 +38,11 @@ $tf->task('logging', function() {
 $tf->task('finish', CustomHandler::class);
 
 $tf->machine('transcoder')
-    ->first('start')
-        ->then('process')
-    ->task('process')
-        ->then('cleanup')
+    ->first('start')->then('process')
+    ->task('process')->then('cleanup')
     ->task('cleanup')
         ->when('input.get("log")', 'logging')
         ->when('!input.get("log")', 'finish')
-        ->continue()
     ->finally('logging')
     ->finally('finish');
 
