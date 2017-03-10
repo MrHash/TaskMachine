@@ -6,7 +6,7 @@ use Shrink0r\PhpSchema\Builder;
 
 class MachineBuilder extends Builder
 {
-    public function run($name)
+    public function task($name)
     {
         return $this->states->{$name};
     }
