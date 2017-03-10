@@ -3,7 +3,6 @@
 namespace TaskFlux;
 
 use Workflux\State\StateTrait;
-use Workflux\Param\Output;
 use Workflux\Param\InputInterface;
 use Workflux\Param\OutputInterface;
 use Workflux\State\StateInterface;

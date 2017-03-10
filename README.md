@@ -1,5 +1,5 @@
 #Taskflux
-Finite state machine backed, dependency injected, task pipelining.
+Finite state machine backed, dependency injected, modular task pipelining.
 
 ```
 git clone git@github.com:MrHash/taskflux.git

@@ -4,8 +4,8 @@ namespace TaskFlux;
 
 use Auryn\Injector;
 use Workflux\Param\InputInterface;
-use Workflux\Param\OutputInterface;
 use Workflux\Param\Output;
+use Workflux\Param\OutputInterface;
 
 class ClosureHandler implements HandlerInterface
 {

@@ -3,15 +3,15 @@
 namespace TaskFlux;
 
 use Auryn\Injector;
+use Shrink0r\PhpSchema\Error;
 use Workflux\Builder\Factory;
 use Workflux\Builder\FactoryInterface;
 use Workflux\Builder\StateMachineBuilder;
-use Shrink0r\PhpSchema\Error;
-use Workflux\Error\ConfigError;
-use Workflux\StateMachine;
 use Workflux\Builder\StateMachineSchema;
+use Workflux\Error\ConfigError;
 use Workflux\Param\Input;
 use Workflux\Param\OutputInterface;
+use Workflux\StateMachine;
 
 class TaskFlux
 {
@@ -21,7 +21,7 @@ class TaskFlux
 
     private $tasks = [];
 
-    private $pipelines = [];
+    private $machines = [];
 
     public function __construct(Injector $injector = null, FactoryInterface $factory = null)
     {
@@ -34,23 +34,26 @@ class TaskFlux
         $this->tasks[$name] = $handler;
     }
 
-    public function pipeline($name, array $tasks)
+    public function machine($name)
     {
-        $result = (new StateMachineSchema)->validate([ 'name' => $name, 'states' => $tasks ]);
+        $schema = new StateMachineSchema;
+        $this->machines[$name] = (new MachineBuilder($schema))->name($name);
+        return $this->machines[$name];
+    }
+
+    public function run($name, array $params = []): OutputInterface
+    {
+        $result = $this->machines[$name]->build();
         if ($result instanceof Error) {
             throw new ConfigError('Invalid statemachine configuration given: '.print_r($result->unwrap(), true));
         }
-        list($states, $transitions) = $this->realizeConfig($tasks);
-        $this->pipelines[$name] = (new StateMachineBuilder(StateMachine::CLASS))
+        list($states, $transitions) = $this->realizeConfig($result->unwrap()['states']);
+        return (new StateMachineBuilder(StateMachine::CLASS))
             ->addStateMachineName($name)
             ->addStates($states)
             ->addTransitions($transitions)
-            ->build();
-    }
-
-    public function run($pipeline, array $params = []): OutputInterface
-    {
-        return $this->pipelines[$pipeline]->execute(new Input($params));
+            ->build()
+            ->execute(new Input($params));
     }
 
     private function getTaskHandler($name)

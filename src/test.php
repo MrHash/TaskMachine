@@ -2,11 +2,10 @@
 
 require 'vendor/autoload.php';
 
-use TaskFlux\TaskFlux;
 use Auryn\Injector;
-use TaskFlux\Environment;
 use TaskFlux\CustomHandler;
-use TaskFlux\Task;
+use TaskFlux\Environment;
+use TaskFlux\TaskFlux;
 use Workflux\Param\InputInterface;
 
 // Bootstrap
@@ -33,17 +32,21 @@ $tf->task('cleanup', function(Environment $env) {
 
 $tf->task('finish', CustomHandler::class);
 
-// Define machine
-$tf->pipeline(
-    'transcoder',
-    [
-        'start' => [ 'initial' => true, 'transitions' => [ 'process' => null ] ],
-        'process' => [ 'input_schema' => [ 'incoming' => [ 'type' => 'string' ] ], 'transitions' => [ 'cleanup' => null ] ],
-        'cleanup' => [ 'transitions' => [ 'finish' => null ] ],
-        'finish' => [ 'final' => true, 'transitions' => [] ]
-    ]
-);
+$tf->machine('transcoder')
+    ->rewind()
+    ->task('start')
+        ->initial(true)
+        ->transitions([ 'process' => null ])
+    ->rewind()
+    ->task('process')
+        ->transitions([ 'cleanup' => null ])
+    ->rewind()
+    ->task('cleanup')
+        ->transitions([ 'finish' => null ])
+    ->rewind()
+    ->task('finish')
+        ->final(true)
+        ->transitions([]);
 
-// Execute pipeline
 $output = $tf->run('transcoder');
 print_r($output->toArray(), true);

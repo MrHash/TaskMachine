@@ -2,8 +2,8 @@
 
 namespace TaskFlux;
 
-use Workflux\Param\Output;
 use Workflux\Param\InputInterface;
+use Workflux\Param\Output;
 use Workflux\Param\OutputInterface;
 
 class CustomHandler implements HandlerInterface
