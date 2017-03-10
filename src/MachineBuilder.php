@@ -6,7 +6,7 @@ use Shrink0r\PhpSchema\Builder;
 
 class MachineBuilder extends Builder
 {
-    public function task($name)
+    public function run($name)
     {
         return $this->states->{$name};
     }
@@ -18,6 +18,7 @@ class MachineBuilder extends Builder
 
     public function build(array $defaults = [])
     {
+//         var_dump($this->data); die;
         return parent::build($defaults);
     }
 }

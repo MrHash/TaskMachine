@@ -10,33 +10,46 @@ use Workflux\Param\InputInterface;
 
 // Bootstrap
 $injector = new Injector;
-$environment = new Environment(['process' => 'process', 'cleanup' => 'cleanup', 'custom' => 'custom']);
+$environment = new Environment(['processed' => 'processed', 'cleanedup' => 'cleaned up', 'custom' => 'finished']);
 $injector->share($environment);
 
 // Define tasks
 $tf = new TaskFlux($injector);
 
 $tf->task('start', function() {
-    echo 'start'.PHP_EOL;
+    echo 'started'.PHP_EOL;
     return ['incoming' => 'outgoing'];
 });
 
 $tf->task('process', function(InputInterface $input, Environment $env) {
     echo $input->get('incoming').PHP_EOL;
-    echo $env->get('process').PHP_EOL;
+    echo $env->get('processed').PHP_EOL;
+    return ['log' => 0];
 });
 
 $tf->task('cleanup', function(Environment $env) {
-    echo $env->get('cleanup').PHP_EOL;
+    echo $env->get('cleanedup').PHP_EOL;
+});
+
+$tf->task('logging', function() {
+    echo 'logged'.PHP_EOL;
 });
 
 $tf->task('finish', CustomHandler::class);
 
 $tf->machine('transcoder')
-    ->task('start')->initial()->then('process')
-    ->task('process')->then('cleanup')
-    ->task('cleanup')->then('finish')
-    ->task('finish')->final();
+    ->run('start')
+        ->initial()
+        ->then('process')
+    ->run('process')
+        ->expects([ 'bool' => 'incoming' ])
+        ->then('cleanup')
+    ->run('cleanup')
+        ->when('input.get("log")', 'logging')
+        ->when('!input.get("log")', 'finish')
+        ->continue()
+    ->run('logging')->final()
+    ->run('finish')->final();
 
 $output = $tf->run('transcoder');
 print_r($output->toArray(), true);
