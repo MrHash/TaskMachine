@@ -2,6 +2,7 @@
 
 namespace TaskFlux;
 
+use TaskFlux\Handler\HandlerInterface;
 use Workflux\Param\InputInterface;
 use Workflux\Param\Output;
 use Workflux\Param\OutputInterface;

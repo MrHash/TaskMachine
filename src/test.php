@@ -8,6 +8,15 @@ use TaskFlux\Environment;
 use TaskFlux\TaskFlux;
 use Workflux\Param\InputInterface;
 
+/*
+ * name ideas
+ * TaskFlux
+ * TaskMachine
+ * MicroMachine
+ * Michine
+ * PipeDream
+ */
+
 // Bootstrap
 $injector = new Injector;
 $environment = new Environment(['processed' => 'processed', 'cleanedup' => 'cleaned up', 'custom' => 'finished']);
@@ -18,33 +27,45 @@ $tf = new TaskFlux($injector);
 
 $tf->task('start', function() {
     echo 'started'.PHP_EOL;
-    return ['incoming' => 'outgoing'];
-});
+    return [ 'incoming' => 'output from start task' ];
+})
+->output([ 'string' => 'incoming' ]);
 
 $tf->task('process', function(InputInterface $input, Environment $env) {
     echo $input->get('incoming').PHP_EOL;
     echo $env->get('processed').PHP_EOL;
-    return ['log' => 0];
-});
+    return [ 'success' => 'yes' ];
+})
+->input([ 'string' => 'incoming' ])
+->output([ 'string' => 'success' ]);
 
-$tf->task('cleanup', function(Environment $env) {
+$tf->task('cleanup', function(Environment $env, InputInterface $input) {
+    echo 'value of success: '.$input->get('success').PHP_EOL;
     echo $env->get('cleanedup').PHP_EOL;
-});
+})
+->input([ 'bool' => 'success' ]);
 
 $tf->task('logging', function() {
     echo 'logged'.PHP_EOL;
 });
 
+$tf->task('failed', function() {
+    echo 'failed!'.PHP_EOL;
+});
+
 $tf->task('finish', CustomHandler::class);
 
+// Setup a machine
 $tf->machine('transcoder')
     ->first('start')->then('process')
     ->task('process')->then('cleanup')
     ->task('cleanup')
-        ->when('input.get("log")', 'logging')
-        ->when('!input.get("log")', 'finish')
-    ->finally('logging')
+        ->when('input.get("success")', 'logging')
+        ->when('!input.get("success")', 'failed')
+    ->task('logging')->then('finish')
+    ->finally('failed')
     ->finally('finish');
 
 $output = $tf->run('transcoder');
+
 print_r($output->toArray(), true);

@@ -1,35 +1,29 @@
 <?php
 
-namespace TaskFlux;
+namespace TaskFlux\Builder;
 
 use Shrink0r\PhpSchema\BuilderStack;
 
 class MachineBuilderStack extends BuilderStack
 {
-    public function finally($task)
+    public function finally($task): MachineBuilder
     {
         return $this->rewind()->finally($task);
     }
 
-    public function task($task)
+    public function task($task): MachineBuilderStack
     {
         return $this->rewind()->task($task);
     }
 
-    public function when($condition, $target)
+    public function when($condition, $target): MachineBuilderStack
     {
         $this->transitions->{$target}->__call('when', [$condition]);
         return $this;
     }
 
-    public function then($target)
+    public function then($target): MachineBuilderStack
     {
         return $this->transitions->{$target};
-    }
-
-    public function expects(array $input)
-    {
-        $this->input_schema->{current($input)}->type(key($input));
-        return $this;
     }
 }

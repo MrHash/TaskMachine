@@ -1,8 +1,9 @@
 <?php
 
-namespace TaskFlux;
+namespace TaskFlux\Builder;
 
 use Shrink0r\PhpSchema\Builder;
+use Shrink0r\PhpSchema\SchemaInterface;
 
 class MachineBuilder extends Builder
 {
@@ -23,14 +24,8 @@ class MachineBuilder extends Builder
         return $this->states->{$name};
     }
 
-    public function getStackImplementor()
+    public function getStackImplementor(): String
     {
         return MachineBuilderStack::CLASS;
-    }
-
-    public function build(array $defaults = [])
-    {
-//         var_dump($this->data); die;
-        return parent::build($defaults);
     }
 }

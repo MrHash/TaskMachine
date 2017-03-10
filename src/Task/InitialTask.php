@@ -1,19 +1,17 @@
 <?php
 
-namespace TaskFlux;
+namespace TaskFlux\Task;
 
 use Workflux\State\StateTrait;
 use Workflux\Param\InputInterface;
 use Workflux\Param\OutputInterface;
 use Workflux\State\StateInterface;
 
-class Task implements StateInterface
+final class InitialTask implements StateInterface
 {
-    use StateTrait;
-
-    private $initial;
-
     private $handler;
+
+    use StateTrait;
 
     public function execute(InputInterface $input): OutputInterface
     {
@@ -22,12 +20,7 @@ class Task implements StateInterface
 
     public function isInitial(): bool
     {
-        return $this->settings->get('initial') === true;
-    }
-
-    public function isFinal(): bool
-    {
-        return $this->settings->get('final') === true;
+        return true;
     }
 
     public function setHandler($handler)

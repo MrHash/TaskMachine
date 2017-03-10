@@ -1,6 +1,6 @@
 <?php
 
-namespace TaskFlux;
+namespace TaskFlux\Handler;
 
 use Auryn\Injector;
 use Workflux\Param\InputInterface;
