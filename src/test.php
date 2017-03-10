@@ -25,13 +25,13 @@ $injector->share($environment);
 // Define tasks
 $tf = new TaskFlux($injector);
 
-$tf->task('start', function() {
+$tf->task('start', function () {
     echo 'started'.PHP_EOL;
     return [ 'incoming' => 'output from start task' ];
 })
 ->output([ 'string' => 'incoming' ]);
 
-$tf->task('process', function(InputInterface $input, Environment $env) {
+$tf->task('process', function (InputInterface $input, Environment $env) {
     echo $input->get('incoming').PHP_EOL;
     echo $env->get('processed').PHP_EOL;
     return [ 'success' => true ];
@@ -39,17 +39,17 @@ $tf->task('process', function(InputInterface $input, Environment $env) {
 ->input([ 'string' => 'incoming' ])
 ->output([ 'bool' => 'success' ]);
 
-$tf->task('cleanup', function(Environment $env, InputInterface $input) {
+$tf->task('cleanup', function (Environment $env, InputInterface $input) {
     echo 'value of success: '.$input->get('success').PHP_EOL;
     echo $env->get('cleanedup').PHP_EOL;
 })
 ->input([ 'bool' => 'success' ]);
 
-$tf->task('logging', function() {
+$tf->task('logging', function () {
     echo 'logged'.PHP_EOL;
 });
 
-$tf->task('failed', function() {
+$tf->task('failed', function () {
     echo 'failed!'.PHP_EOL;
 });
 

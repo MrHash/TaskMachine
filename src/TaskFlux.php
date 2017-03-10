@@ -72,7 +72,7 @@ class TaskFlux
 
         // haven't worked out how to merge the builders so tasks are merged here for now
         $schema = $result->unwrap()['states'];
-        foreach($schema as $task => $config) {
+        foreach ($schema as $task => $config) {
             if (!isset($this->tasks[$task])) {
                 throw new ConfigError("Task $task has not been defined.");
             }
@@ -93,7 +93,7 @@ class TaskFlux
     {
         $handler = $this->tasks[$name]['handler'];
         if ($handler instanceof \Closure) {
-            return new ClosureHandler($name, $handler, $this->injector);
+            return new ClosureHandler($handler, $this->injector);
         } else {
             return $this->injector->make($handler);
         }
@@ -105,7 +105,6 @@ class TaskFlux
         $states = [];
         $transitions = [];
         foreach ($config as $name => $state_config) {
-
             // hacks
             $state_config['class'] = Task::class;
             if (isset($state_config['initial'])) {

@@ -7,15 +7,12 @@ use Workflux\Param\InputInterface;
 
 class ClosureHandler implements HandlerInterface
 {
-    private $name;
-
     private $handler;
 
     private $injector;
 
-    public function __construct($name, \Closure $handler, Injector $injector)
+    public function __construct(\Closure $handler, Injector $injector)
     {
-        $this->name = $name;
         $this->handler = $handler;
         $this->injector = $injector;
     }

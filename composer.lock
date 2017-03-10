@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "defe6fa0da9a10ca55d24faf95ec42cf",
+    "content-hash": "8ac49951691a8ed98dcaca535864e383",
     "packages": [
         {
             "name": "php-ds/php-ds",
@@ -255,21 +255,14 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/MrHash/php-schema.git",
-                "reference": "8ca3fc221f130a4a59da054af62059925b368d71"
+                "url": "https://github.com/shrink0r/php-schema.git",
+                "reference": "94293fe897af376dd9d05962e2c516079409dd29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MrHash/php-schema/zipball/8ca3fc221f130a4a59da054af62059925b368d71",
-                "reference": "8ca3fc221f130a4a59da054af62059925b368d71",
+                "url": "https://api.github.com/repos/shrink0r/php-schema/zipball/94293fe897af376dd9d05962e2c516079409dd29",
+                "reference": "94293fe897af376dd9d05962e2c516079409dd29",
                 "shasum": ""
-            },
-            "archive": {
-                "exclude": [
-                    "/tests",
-                    "/build",
-                    "/vendor"
-                ]
             },
             "require": {
                 "php": ">=5.6.1"
@@ -291,67 +284,7 @@
                     "Shrink0r\\PhpSchema\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Shrink0r\\PhpSchema\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "@php-lint",
-                    "@php-test",
-                    "@code-sniffer",
-                    "@validate-json"
-                ],
-                "sniff": [
-                    "@php-lint",
-                    "@code-sniffer-autofix",
-                    "@code-sniffer",
-                    "@copy-paste-detector",
-                    "@mess-detector"
-                ],
-                "docs": [
-                    "vendor/sami/sami/sami.php --ansi update sami.cfg.php"
-                ],
-                "code-sniffer": [
-                    "phpcs -p -s --extensions=php --standard='PSR1,PSR2' src/ tests/"
-                ],
-                "code-sniffer-autofix": [
-                    "phpcbf --standard=PSR2 -d tabWidth=4 src/ tests/"
-                ],
-                "copy-paste-detector": [
-                    "phpcpd src/ tests/"
-                ],
-                "mess-detector": [
-                    "phpmd src,tests text codesize,unusedcode,naming,cleancode,design"
-                ],
-                "php-lint": [
-                    "parallel-lint --blame --exclude vendor src/ tests/"
-                ],
-                "php-lint2": [
-                    "find src/ -name '*.php' -print0 | xargs -0 -L 1 php -l",
-                    "find tests/ -name '*.php' -print0 | xargs -0 -L 1 php -l"
-                ],
-                "php-loc": [
-                    "phploc src"
-                ],
-                "php-test": [
-                    "phpunit"
-                ],
-                "reports": [
-                    "phploc --log-xml ./build/coverage/logs/phploc.xml --progress src || echo",
-                    "phpcs -p -s --extensions=php --report=checkstyle --report-file=./build/coverage/logs/checkstyle.xml --standard='PSR1,PSR2' src/ tests/ || echo",
-                    "phpcpd --log-pmd ./build/coverage/logs/phpcpd.xml --progress src/ tests/ || echo",
-                    "phpmd src xml codesize,unusedcode,naming,cleancode,design --reportfile ./build/coverage/logs/phpmd.xml || echo",
-                    "phpmd src html codesize,unusedcode,naming,cleancode,design --reportfile ./build/coverage/logs/phpmd.html || echo"
-                ],
-                "validate-json": [
-                    "composer validate --no-check-all --no-check-lock"
-                ],
-                "validate-deps": [
-                    "composer validate --with-dependencies --strict"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -360,13 +293,7 @@
                 "schema",
                 "validation"
             ],
-            "support": {
-                "issues": "https://github.com/shrink0r/php-schema/issues",
-                "wiki": "https://github.com/shrink0r/php-schema/wiki",
-                "irc": "irc://irc.freenode.org/honeybee",
-                "source": "https://github.com/shrink0r/php-schema"
-            },
-            "time": "2017-03-10 16:08:47"
+            "time": "2017-03-10 23:04:57"
         },
         {
             "name": "shrink0r/suffix-tree",
@@ -479,16 +406,16 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v3.2.5",
+            "version": "v3.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "c28526c3b88661905d3cabb811b215bd7eed9ed1"
+                "reference": "38ead350d7c27b08b8da9401cbdbea8121f929a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/c28526c3b88661905d3cabb811b215bd7eed9ed1",
-                "reference": "c28526c3b88661905d3cabb811b215bd7eed9ed1",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/38ead350d7c27b08b8da9401cbdbea8121f929a4",
+                "reference": "38ead350d7c27b08b8da9401cbdbea8121f929a4",
                 "shasum": ""
             },
             "require": {
@@ -542,11 +469,11 @@
                 "caching",
                 "psr6"
             ],
-            "time": "2017-03-07T15:57:48+00:00"
+            "time": "2017-03-08T12:16:26+00:00"
         },
         {
             "name": "symfony/expression-language",
-            "version": "v3.2.5",
+            "version": "v3.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/expression-language.git",
@@ -655,10 +582,89 @@
             "time": "2017-02-18T17:06:33+00:00"
         }
     ],
-    "packages-dev": [],
+    "packages-dev": [
+        {
+            "name": "squizlabs/php_codesniffer",
+            "version": "2.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
+                "reference": "d7cf0d894e8aa4c73712ee4a331cc1eaa37cdc7d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/d7cf0d894e8aa4c73712ee4a331cc1eaa37cdc7d",
+                "reference": "d7cf0d894e8aa4c73712ee4a331cc1eaa37cdc7d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "ext-tokenizer": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.1.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "bin": [
+                "scripts/phpcs",
+                "scripts/phpcbf"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "CodeSniffer.php",
+                    "CodeSniffer/CLI.php",
+                    "CodeSniffer/Exception.php",
+                    "CodeSniffer/File.php",
+                    "CodeSniffer/Fixer.php",
+                    "CodeSniffer/Report.php",
+                    "CodeSniffer/Reporting.php",
+                    "CodeSniffer/Sniff.php",
+                    "CodeSniffer/Tokens.php",
+                    "CodeSniffer/Reports/",
+                    "CodeSniffer/Tokenizers/",
+                    "CodeSniffer/DocGenerators/",
+                    "CodeSniffer/Standards/AbstractPatternSniff.php",
+                    "CodeSniffer/Standards/AbstractScopeSniff.php",
+                    "CodeSniffer/Standards/AbstractVariableSniff.php",
+                    "CodeSniffer/Standards/IncorrectPatternException.php",
+                    "CodeSniffer/Standards/Generic/Sniffs/",
+                    "CodeSniffer/Standards/MySource/Sniffs/",
+                    "CodeSniffer/Standards/PEAR/Sniffs/",
+                    "CodeSniffer/Standards/PSR1/Sniffs/",
+                    "CodeSniffer/Standards/PSR2/Sniffs/",
+                    "CodeSniffer/Standards/Squiz/Sniffs/",
+                    "CodeSniffer/Standards/Zend/Sniffs/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Sherwood",
+                    "role": "lead"
+                }
+            ],
+            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
+            "homepage": "http://www.squizlabs.com/php-codesniffer",
+            "keywords": [
+                "phpcs",
+                "standards"
+            ],
+            "time": "2017-03-01T22:17:45+00:00"
+        }
+    ],
     "aliases": [
         {
-            "alias": "0.3.0",
+            "alias": "0.3",
             "alias_normalized": "0.3.0.0",
             "version": "9999999-dev",
             "package": "shrink0r/php-schema"
