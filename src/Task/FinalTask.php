@@ -1,6 +1,6 @@
 <?php
 
-namespace TaskFlux\Task;
+namespace TaskMachine\Task;
 
 use Workflux\State\StateTrait;
 use Workflux\Param\InputInterface;

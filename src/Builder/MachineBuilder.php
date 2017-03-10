@@ -1,6 +1,6 @@
 <?php
 
-namespace TaskFlux\Builder;
+namespace TaskMachine\Builder;
 
 use Shrink0r\PhpSchema\Builder;
 use Shrink0r\PhpSchema\SchemaInterface;

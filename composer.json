@@ -1,7 +1,8 @@
 {
-    "name": "mrhash/taskflux",
-    "description": "Workflux FSM based task pipeline builder",
+    "name": "mrhash/taskmachine",
     "type": "library",
+    "description": "Modular micro-service task pipelining with valid state machine integrity.",
+    "keywords": ["modular", "micro service", "task", "pipeline", "state machine", "fsm", "auryn", "php"],
     "license": "MPL-2.0",
     "require": {
         "php": "^7.0",
@@ -16,10 +17,10 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "TaskFlux\\": "src/"
+            "TaskMachine\\": "src/"
         }
     },
     "scripts": {
-        "code-sniffer": "vendor/bin/phpcs --extensions=php --standard=psr2 src"
+        "sniff": "vendor/bin/phpcs --extensions=php --standard=psr2 src"
     }
 }

@@ -1,26 +1,26 @@
 <?php
 
-namespace TaskFlux;
+namespace TaskMachine;
 
 use Auryn\Injector;
 use Shrink0r\PhpSchema\Error;
-use TaskFlux\Handler\ClosureHandler;
-use Workflux\Builder\Factory;
-use Workflux\Builder\FactoryInterface;
-use TaskFlux\Builder\MachineBuilder;
-use Workflux\Builder\StateMachineBuilder;
-use Workflux\Builder\StateMachineSchema;
-use TaskFlux\Builder\TaskBuilder;
+use TaskMachine\Builder\MachineBuilder;
+use TaskMachine\Builder\TaskBuilder;
+use TaskMachine\Handler\ClosureHandler;
+use TaskMachine\Schema\TaskSchema;
+use TaskMachine\Task\FinalTask;
+use TaskMachine\Task\InitialTask;
+use TaskMachine\Task\Task;
 use Workflux\Error\ConfigError;
 use Workflux\Param\Input;
 use Workflux\Param\OutputInterface;
-use TaskFlux\Schema\TaskSchema;
 use Workflux\StateMachine;
-use TaskFlux\Task\FinalTask;
-use TaskFlux\Task\InitialTask;
-use TaskFlux\Task\Task;
+use Workflux\Builder\Factory;
+use Workflux\Builder\FactoryInterface;
+use Workflux\Builder\StateMachineBuilder;
+use Workflux\Builder\StateMachineSchema;
 
-class TaskFlux
+class TaskMachine
 {
     private $injector;
 
@@ -132,6 +132,6 @@ class TaskFlux
                 $transitions[] = $this->factory->createTransition($name, $key, $transition_config);
             }
         }
-        return [ $states, $transitions ];
+        return [$states, $transitions];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace TaskFlux\Schema;
+namespace TaskMachine\Schema;
 
 use Shrink0r\PhpSchema\Factory;
 use Shrink0r\PhpSchema\FactoryInterface;

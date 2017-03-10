@@ -1,6 +1,6 @@
 <?php
 
-namespace TaskFlux\Handler;
+namespace TaskMachine\Handler;
 
 use Workflux\Param\InputInterface;
 
