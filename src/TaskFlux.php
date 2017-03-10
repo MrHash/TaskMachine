@@ -36,6 +36,10 @@ class TaskFlux
 
     public function pipeline($name, array $tasks)
     {
+        $result = (new StateMachineSchema)->validate([ 'name' => $name, 'states' => $tasks ]);
+        if ($result instanceof Error) {
+            throw new ConfigError('Invalid statemachine configuration given: '.print_r($result->unwrap(), true));
+        }
         list($states, $transitions) = $this->realizeConfig($tasks);
         $this->pipelines[$name] = (new StateMachineBuilder(StateMachine::CLASS))
             ->addStateMachineName($name)
@@ -82,9 +86,6 @@ class TaskFlux
 
             // hacks
             $state->setHandler($this->getTaskHandler($name));
-            if (!array_key_exists('transitions', $state_config)) {
-                $state_config['transitions'] = [];
-            }
             // end hacks
 
             $states[] = $state;

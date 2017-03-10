@@ -38,9 +38,9 @@ $tf->pipeline(
     'transcoder',
     [
         'start' => [ 'initial' => true, 'transitions' => [ 'process' => null ] ],
-        'process' => [ 'input' => [ 'incoming' => [ 'type' => 'string' ] ], 'transitions' => [ 'cleanup' => null ] ],
+        'process' => [ 'input_schema' => [ 'incoming' => [ 'type' => 'string' ] ], 'transitions' => [ 'cleanup' => null ] ],
         'cleanup' => [ 'transitions' => [ 'finish' => null ] ],
-        'finish' => [ 'final' => true ]
+        'finish' => [ 'final' => true, 'transitions' => [] ]
     ]
 );
 

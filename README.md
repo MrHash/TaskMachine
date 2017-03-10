@@ -1,5 +1,5 @@
 #Taskflux
-Robust finite state machine backed arbitrary task pipelining.
+Finite state machine backed, dependency injected, task pipelining.
 
 ```
 git clone git@github.com:MrHash/taskflux.git
