@@ -17,7 +17,7 @@ final class MachineSchema implements SchemaInterface
 
     public function __construct()
     {
-        $this->internal_schema = new Schema('statemachine', [
+        $this->internal_schema = new Schema('taskmachine', [
             'type' => 'assoc',
             'properties' => [
                 "name" => [ "type" => "string" ],

@@ -11,7 +11,8 @@
         "rdlowrey/auryn": "^1.4"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "~2.3"
+        "phpunit/phpunit": "^5.3",
+        "squizlabs/php_codesniffer": "^2.3"
     },
     "prefer-stable": true,
     "minimum-stability": "dev",
@@ -20,7 +21,13 @@
             "TaskMachine\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "TaskMachine\\Tests\\": "tests/"
+        }
+    },
     "scripts": {
-        "sniff": "vendor/bin/phpcs --extensions=php --standard=psr2 src"
+        "sniff": "vendor/bin/phpcs --extensions=php --standard=psr2 src tests",
+        "test": "vendor/bin/phpunit"
     }
 }
