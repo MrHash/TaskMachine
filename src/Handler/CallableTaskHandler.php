@@ -6,7 +6,7 @@ use Auryn\Injector;
 use Workflux\Param\InputInterface;
 use Workflux\Param\Input;
 
-class CallableHandler implements HandlerInterface
+class CallableTaskHandler implements TaskHandlerInterface
 {
     private $handler;
 

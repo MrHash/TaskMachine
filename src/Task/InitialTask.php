@@ -2,7 +2,7 @@
 
 namespace TaskMachine\Task;
 
-use TaskMachine\Handler\HandlerInterface;
+use TaskMachine\Handler\TaskHandlerInterface;
 use Workflux\State\StateTrait;
 use Workflux\Param\InputInterface;
 use Workflux\State\StateInterface;
@@ -23,7 +23,7 @@ final class InitialTask implements StateInterface
         return true;
     }
 
-    public function setHandler(HandlerInterface $handler)
+    public function setHandler(TaskHandlerInterface $handler)
     {
         $this->handler = $handler;
     }

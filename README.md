@@ -80,10 +80,10 @@ $tm->task('process', function () {
   return ['success' => $result];
 })->output(['bool' => 'success']);
 
-// Task with your instantiated object which implements HandlerInterface
+// Task with your instantiated object which implements TaskHandlerInterface
 $tm->task('finish', new Finisher($myService));
 
-// Task with your handler which implements HandlerInterface
+// Task with your handler which implements TaskHandlerInterface
 // Your dependencies are injected
 $tm->task('fail', MyCustomServiceInterface::class);
 

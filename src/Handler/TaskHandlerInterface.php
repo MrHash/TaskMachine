@@ -4,7 +4,7 @@ namespace TaskMachine\Handler;
 
 use Workflux\Param\InputInterface;
 
-interface HandlerInterface
+interface TaskHandlerInterface
 {
     public function execute(InputInterface $input): array;
 }
