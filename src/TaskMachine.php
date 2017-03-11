@@ -6,7 +6,7 @@ use Auryn\Injector;
 use Shrink0r\PhpSchema\Error;
 use TaskMachine\Builder\MachineBuilder;
 use TaskMachine\Builder\TaskBuilder;
-use TaskMachine\Handler\ClosureHandler;
+use TaskMachine\Handler\CallableHandler;
 use TaskMachine\Schema\TaskSchema;
 use TaskMachine\Task\FinalTask;
 use TaskMachine\Task\InitialTask;
@@ -92,10 +92,10 @@ class TaskMachine
     private function getTaskHandler($name)
     {
         $handler = $this->tasks[$name]['handler'];
-        if ($handler instanceof \Closure) {
-            return new ClosureHandler($handler, $this->injector);
-        } else {
+        if (is_string($handler) && class_exists($handler)) {
             return $this->injector->make($handler);
+        } else {
+            return new CallableHandler($handler, $this->injector);
         }
     }
 
