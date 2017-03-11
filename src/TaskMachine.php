@@ -6,20 +6,16 @@ use Auryn\Injector;
 use Shrink0r\PhpSchema\Error;
 use TaskMachine\Builder\MachineBuilder;
 use TaskMachine\Builder\TaskBuilder;
+use TaskMachine\Builder\TaskFactory;
 use TaskMachine\Handler\CallableTaskHandler;
 use TaskMachine\Handler\TaskHandlerInterface;
 use TaskMachine\Schema\TaskSchema;
-use TaskMachine\Task\FinalTask;
-use TaskMachine\Task\InitialTask;
-use TaskMachine\Task\Task;
+use Workflux\Builder\StateMachineBuilder;
+use Workflux\Builder\StateMachineSchema;
 use Workflux\Error\ConfigError;
 use Workflux\Param\Input;
 use Workflux\Param\OutputInterface;
 use Workflux\StateMachine;
-use Workflux\Builder\Factory;
-use Workflux\Builder\FactoryInterface;
-use Workflux\Builder\StateMachineBuilder;
-use Workflux\Builder\StateMachineSchema;
 
 class TaskMachine
 {
@@ -34,7 +30,7 @@ class TaskMachine
     public function __construct(Injector $injector = null, FactoryInterface $factory = null)
     {
         $this->injector = $injector ?? new Injector;
-        $this->factory = $factory ?? new Factory;
+        $this->factory = $factory ?? new TaskFactory;
     }
 
     public function task($name, $handler)
@@ -75,7 +71,7 @@ class TaskMachine
         $schema = $result->unwrap()['states'];
         foreach ($schema as $task => $config) {
             if (!isset($this->tasks[$task])) {
-                throw new ConfigError("Task $task has not been defined.");
+                throw new ConfigError("Task '$task' has not been defined.");
             }
 
             $result = $this->tasks[$task]['builder']->build();
@@ -83,7 +79,10 @@ class TaskMachine
                 throw new ConfigError('Invalid task configuration given: '.print_r($result->unwrap(), true));
             }
 
-            $schema[$task] = array_merge($config, $result->unwrap());
+            $taskConfig = $result->unwrap();
+            // add the handler to the state config
+            $taskConfig['settings']['handler'] = $this->getTaskHandler($task);
+            $schema[$task] = array_merge($config, $taskConfig);
         }
         // **
 
@@ -108,25 +107,10 @@ class TaskMachine
         $states = [];
         $transitions = [];
         foreach ($config as $name => $state_config) {
-            // hacks
-            $state_config['class'] = Task::class;
-            if (isset($state_config['initial'])) {
-                $state_config['class'] = InitialTask::class;
-            }
-            if (isset($state_config['final'])) {
-                $state_config['class'] = FinalTask::class;
-            }
-            // end hacks
-
             $state = $this->factory->createState($name, $state_config);
             if (!is_array($state_config)) {
                 continue;
             }
-
-            // hacks
-            $state->setHandler($this->getTaskHandler($name));
-            // end hacks
-
             $states[] = $state;
             foreach ($state_config['transitions'] as $key => $transition_config) {
                 if (is_string($transition_config)) {

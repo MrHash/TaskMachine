@@ -21,9 +21,10 @@ $tm->task('goodbye', function () {
 
 // Define a machine
 $tm->machine('greetings')
-  ->first('hello')      // specify an initial task
-    ->then('goodbye')   // specify a task to transition to
-  ->finally('goodbye'); // specify a final task
+  // specify an initial task and transition
+  ->first('hello')->then('goodbye')
+   // specify a final task
+  ->finally('goodbye');
 
 // Run the machine.
 $tm->run('greetings');
@@ -51,7 +52,7 @@ $tm->task('echo', function(InputInterface $input) {
   echo $input->get('text');
 })->input(['string' => 'text']);
 
-// No output specification means any output is allowed
+// No input/output specification means any input/output is allowed (i.e. no validation)
 $tm->task('goodbye', function () {
   return ['closing' => 'Goodbye World'];
 });
@@ -90,8 +91,9 @@ $tm->task('fail', MyCustomServiceInterface::class);
 // Define a machine with multiple final tasks
 $tm->machine('switcher')
   ->first('process')
-    ->when('output.get("success")', 'finish')  // specify a condition
-    ->when('!output.get("success")', 'failed') // specify an alternate condition
+    // specify switch conditions and subsequent tasks
+    ->when('output.get("success")', 'finish')
+    ->when('!output.get("success")', 'failed')
   ->finally('finish')
   ->finally('fail');
   
