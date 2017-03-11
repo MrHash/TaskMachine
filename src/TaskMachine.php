@@ -7,6 +7,7 @@ use Shrink0r\PhpSchema\Error;
 use TaskMachine\Builder\MachineBuilder;
 use TaskMachine\Builder\TaskBuilder;
 use TaskMachine\Handler\CallableHandler;
+use TaskMachine\Handler\HandlerInterface;
 use TaskMachine\Schema\TaskSchema;
 use TaskMachine\Task\FinalTask;
 use TaskMachine\Task\InitialTask;
@@ -94,6 +95,8 @@ class TaskMachine
         $handler = $this->tasks[$name]['handler'];
         if (is_string($handler) && class_exists($handler)) {
             return $this->injector->make($handler);
+        } elseif ($handler instanceof HandlerInterface) {
+            return $handler;
         } else {
             return new CallableHandler($handler, $this->injector);
         }

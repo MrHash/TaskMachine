@@ -21,11 +21,11 @@ $tm->task('goodbye', function () {
 
 // Define a machine
 $tm->machine('greetings')
-  ->first('hello')      // select the initial task
-    ->then('goodbye')   // specify the next task to transition to
-  ->finally('goodbye'); // select the final task
+  ->first('hello')      // specify an initial task
+    ->then('goodbye')   // specify a task to transition to
+  ->finally('goodbye'); // specify a final task
 
-// Run the machine
+// Run the machine.
 $tm->run('greetings');
 ```
 
@@ -62,7 +62,7 @@ $tm->machine('translator')
   ->task('echo')->then('goodbye')
   ->finally('goodbye');
 
-// Run it with input and then echo the output from the last task
+// Run with input and then echo the output from the last task
 $output = $tm->run('translator', ['text' => 'Hello World']);
 echo $output->get('closing');
 ```
@@ -80,15 +80,14 @@ $tm->task('process', function () {
   return ['success' => $result];
 })->output(['bool' => 'success']);
 
-$tm->task('finish', function() {
-  echo 'finished';
-});
+// Task with your instantiated object which implements HandlerInterface
+$tm->task('finish', new Finisher($myService));
 
-// Task with your handler which implements HandlerInterface. 
-// Your dependencies are injected.
+// Task with your handler which implements HandlerInterface
+// Your dependencies are injected
 $tm->task('fail', MyCustomServiceInterface::class);
 
-// Define the machine with multiple final tasks
+// Define a machine with multiple final tasks
 $tm->machine('switcher')
   ->first('process')
     ->when('output.get("success")', 'finish')  // specify a condition
