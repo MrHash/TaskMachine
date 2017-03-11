@@ -9,9 +9,9 @@ use TaskMachine\Builder\TaskBuilder;
 use TaskMachine\Builder\TaskFactory;
 use TaskMachine\Handler\CallableTaskHandler;
 use TaskMachine\Handler\TaskHandlerInterface;
+use TaskMachine\Schema\MachineSchema;
 use TaskMachine\Schema\TaskSchema;
 use Workflux\Builder\StateMachineBuilder;
-use Workflux\Builder\StateMachineSchema;
 use Workflux\Error\ConfigError;
 use Workflux\Param\Input;
 use Workflux\Param\OutputInterface;
@@ -44,7 +44,7 @@ class TaskMachine
 
     public function machine($name)
     {
-        $this->machines[$name] = (new MachineBuilder(new StateMachineSchema))->name($name);
+        $this->machines[$name] = (new MachineBuilder(new MachineSchema))->name($name);
         return $this->machines[$name];
     }
 
