@@ -19,11 +19,14 @@ $tm->task('goodbye', function () {
   echo 'Goodbye World';
 });
 
+// Define a machine
 $tm->machine('greetings')
-  ->first('hello')     // select the initial task
-    ->then('goodbye')  // specify the next task to transition to
-  ->finally('goodbye') // select the final task
-  ->run();             // run the machine!
+  ->first('hello')      // select the initial task
+    ->then('goodbye')   // specify the next task to transition to
+  ->finally('goodbye'); // select the final task
+
+// Run the machine
+$tm->run('greetings');
 ```
 
 ##Simple pipeline with DI & I/O
@@ -48,15 +51,51 @@ $tm->task('echo', function(InputInterface $input) {
   echo $input->get('text');
 })->input(['string' => 'text']);
 
+// No output specification means any output is allowed
 $tm->task('goodbye', function () {
-  echo 'Goodbye World';
+  return ['closing' => 'Goodbye World'];
 });
 
-$tm->machine('greetings')
+ // Define a machine
+$tm->machine('translator')
   ->first('translate')->then('echo')
   ->task('echo')->then('goodbye')
-  ->finally('goodbye')
-  ->run(['text' => 'Hello World']); // run the machine with input!
+  ->finally('goodbye');
+
+// Run it with input and then echo the output from the last task
+$output = $tm->run('translator', ['text' => 'Hello World']);
+echo $output->get('closing');
 ```
 
->##Any faults in the configuration of your machine will result in a build error! Tasks must be linked together correctly and have valid and unambiguous transitions.
+>##Any faults in the configuration of your machine will result in a build error! Tasks must be linked together correctly and have valid unambiguous transitions.
+
+##Conditional branching
+Machines can branch to different tasks based on conditions written in Symfony Expression Language.
+```php
+$tm = new TaskMachine($myInjector);
+
+// A task which outputs a random true or false result
+$tm->task('process', function () {
+  $result = (bool)random_int(0,1);
+  return ['success' => $result];
+})->output(['bool' => 'success']);
+
+$tm->task('finish', function() {
+  echo 'finished';
+});
+
+// Task with your handler which implements HandlerInterface. 
+// Your dependencies are injected.
+$tm->task('fail', MyCustomServiceInterface::class);
+
+// Define the machine with multiple final tasks
+$tm->machine('switcher')
+  ->first('process')
+    ->when('output.get("success")', 'finish')  // specify a condition
+    ->when('!output.get("success")', 'failed') // specify an alternate condition
+  ->finally('finish')
+  ->finally('fail');
+  
+// Run it.
+$tm->run('switcher');
+```
