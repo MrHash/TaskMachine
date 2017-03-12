@@ -82,7 +82,7 @@ class TaskMachine
             $taskConfig = $result->unwrap();
             // add the handler to the state config
             $taskConfig['settings']['handler'] = $this->getTaskHandler($task);
-            $schema[$task] = array_merge($config, $taskConfig);
+            $schema[$task] = array_replace_recursive($config, $taskConfig);
         }
         // **
 

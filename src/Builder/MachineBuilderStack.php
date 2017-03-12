@@ -16,6 +16,12 @@ class MachineBuilderStack extends BuilderStack
         return $this->rewind()->task($task);
     }
 
+    public function with(array $setting)
+    {
+        $this->settings->{key($setting)}(current($setting));
+        return $this;
+    }
+
     public function when($condition, $target): MachineBuilderStack
     {
         $this->transitions->{$target}->__call('when', [$condition]);

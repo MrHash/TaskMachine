@@ -12,6 +12,6 @@ final class Task implements StateInterface
 
     private function generateOutputParams(InputInterface $input): array
     {
-        return $this->settings->get('handler')->execute($input);
+        return $this->settings->get('handler')->execute($input, $this->settings);
     }
 }
