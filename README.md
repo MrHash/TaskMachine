@@ -1,5 +1,5 @@
 #TaskMachine
-###Modular micro-service task pipelining with validated state machine integrity.
+###Modular micro-service task pipelining & orchestration with validated state machine integrity.
 
 Define micro-service tasks and arrange them into state machine managed flows with a simple and expressive API. You can create build tool chains, processing pipelines, utility services, or even serve web pages...
 
@@ -31,7 +31,7 @@ $tm->run('greetings');
 ```
 
 ##Simple pipeline with DI & I/O
-Now we introduce some more tasks with DI and input/output. Tasks are isolated by definition and have expected inputs and outputs.
+Now we introduce some more tasks with DI and input/output. Tasks are isolated by definition and optionally have expected inputs and outputs.
 ```php
 // Bootstrap your own Auryn injector and throw it in
 $tm = new TaskMachine($myInjector);
