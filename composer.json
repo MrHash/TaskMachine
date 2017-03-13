@@ -1,8 +1,8 @@
 {
     "name": "mrhash/taskmachine",
     "type": "library",
-    "description": "Modular micro-service task pipelining with valid state machine integrity.",
-    "keywords": ["modular", "micro service", "task", "pipeline", "state machine", "fsm", "auryn", "php"],
+    "description": "Modular micro-service task pipelining & orchestration with validated state machine integrity.",
+    "keywords": ["modular", "micro service", "task", "pipeline", "state machine", "fsm", "auryn", "php", "orchestration"],
     "license": "MPL-2.0",
     "require": {
         "php": "^7.0",
