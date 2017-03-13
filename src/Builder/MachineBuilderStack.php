@@ -16,15 +16,19 @@ class MachineBuilderStack extends BuilderStack
         return $this->rewind()->task($task);
     }
 
-    public function with(array $setting)
+    public function with(array $inputs)
     {
-        $this->settings->{key($setting)}(current($setting));
+        foreach ($inputs as $key => $value) {
+            $this->settings->{$key}($value);
+        }
         return $this;
     }
 
-    public function when($condition, $target): MachineBuilderStack
+    public function when(array $transitions): MachineBuilderStack
     {
-        $this->transitions->{$target}->__call('when', [$condition]);
+        foreach ($transitions as $condition => $target) {
+            $this->transitions->{$target}->__call('when', [$condition]);
+        }
         return $this;
     }
 
