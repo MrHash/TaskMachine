@@ -30,8 +30,8 @@ $tm->machine('greetings')
 $tm->run('greetings');
 ```
 
-##Simple pipeline with DI & I/O
-Now we introduce some more tasks with DI and input/output. Tasks are isolated by definition and optionally have expected inputs and outputs.
+##Pipeline with DI
+Now we introduce some more tasks with DI. Tasks are isolated by definition and optionally have expected inputs and outputs.
 ```php
 // Bootstrap your own Auryn injector and throw it in
 $tm = new TaskMachine($myInjector);
@@ -43,16 +43,13 @@ $tm->task(
     $translation = $translator->translate($input->get('text'));
     return ['text' => $translation];
   }
-)
-// Declare expected input and output for this task
-->input(['string' => 'text'])->output(['string' => 'text']);
+);
 
 // Input from previous task is injectable and immutable
 $tm->task('echo', function(InputInterface $input) {
   echo $input->get('text');
-})->input(['string' => 'text']);
+});
 
-// No input/output specification means any input/output is allowed (i.e. no validation)
 $tm->task('goodbye', function () {
   return ['closing' => 'Goodbye World'];
 });
@@ -79,7 +76,7 @@ $tm = new TaskMachine($myInjector);
 $tm->task('process', function () {
   $result = (bool)random_int(0,1);
   return ['success' => $result];
-})->output(['bool' => 'success']);
+});
 
 // Task with your instantiated object which implements TaskHandlerInterface
 $tm->task('finish', new Finisher($myService));
@@ -91,9 +88,11 @@ $tm->task('fail', MyCustomServiceInterface::class);
 // Define a machine with multiple final tasks
 $tm->machine('switcher')
   ->first('process')
-    // specify switch conditions and subsequent tasks
-    ->when('output.get("success")', 'finish')
-    ->when('!output.get("success")', 'failed')
+    // Specify switch conditions and subsequent tasks
+    ->when([
+       'output.get("success")' => 'finish',
+       '!output.get("success")' => 'fail'
+    ])
   ->finally('finish')
   ->finally('fail');
   
