@@ -16,6 +16,14 @@ class MachineBuilderStack extends BuilderStack
         return $this->rewind()->task($task);
     }
 
+    public function map(array $mappings)
+    {
+        foreach ($mappings as $from => $to) {
+            $this->settings->_map->{$from}($to);
+        }
+        return $this;
+    }
+
     public function with(array $inputs)
     {
         foreach ($inputs as $key => $value) {

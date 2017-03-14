@@ -164,9 +164,14 @@ trait TaskTrait
      */
     private function generateOutputParams(InputInterface $input): array
     {
-        $handler = $this->getSetting('handler');
-        $mappedInput = $input->withParams($this->settings->withoutParam('handler')->toArray());
-        return $handler->execute($mappedInput);
+        $handler = $this->getSetting('_handler');
+        $mapping = $this->getSetting('_map', []);
+        $input = $input->withParams($this->settings->withoutParams(['_handler', '_map'])->toArray());
+        foreach ($handler->execute($input) as $key => $value) {
+            $name = $mapping[$key] ?? $key;
+            $output[$name] = $value;
+        }
+        return $output ?? [];
     }
 
     /**
