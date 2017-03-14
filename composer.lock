@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a1135e41ecdd83dcc845c635bf40121a",
+    "content-hash": "301971bc88b4bc1ccc0161c9e67e8218",
     "packages": [
         {
             "name": "php-ds/php-ds",
@@ -353,16 +353,16 @@
         },
         {
             "name": "shrink0r/workflux",
-            "version": "1.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/shrink0r/workflux.git",
-                "reference": "d2818fa5fcf6eb39037020fc0c64b8c2dbf906bc"
+                "reference": "56dbcfd59bf68dd2a5e5c601103911571ed22209"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/d2818fa5fcf6eb39037020fc0c64b8c2dbf906bc",
-                "reference": "d2818fa5fcf6eb39037020fc0c64b8c2dbf906bc",
+                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/56dbcfd59bf68dd2a5e5c601103911571ed22209",
+                "reference": "56dbcfd59bf68dd2a5e5c601103911571ed22209",
                 "shasum": ""
             },
             "require": {
@@ -402,7 +402,7 @@
                 "workflow",
                 "workflux"
             ],
-            "time": "2016-12-09T14:56:03+00:00"
+            "time": "2017-03-14 20:35:02"
         },
         {
             "name": "symfony/cache",
@@ -1985,6 +1985,7 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
+        "shrink0r/workflux": 20,
         "shrink0r/php-schema": 20
     },
     "prefer-stable": true,
