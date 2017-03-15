@@ -24,7 +24,8 @@ $tm->machine('greetings')
   // specify an initial task and transition
   ->first('hello')->then('goodbye')
    // specify a final task
-  ->finally('goodbye');
+  ->finally('goodbye')
+  ->build();
 
 // Run the machine.
 $tm->run('greetings');
@@ -58,7 +59,8 @@ $tm->task('goodbye', function () {
 $tm->machine('translator')
   ->first('translate')->then('echo')
   ->task('echo')->then('goodbye')
-  ->finally('goodbye');
+  ->finally('goodbye')
+  ->build();
 
 // Run with input and then echo the output from the last task
 $output = $tm->run('translator', ['text' => 'Hello World']);
@@ -94,7 +96,8 @@ $tm->machine('switcher')
        '!output.success' => 'fail'
     ])
   ->finally('finish')
-  ->finally('fail');
+  ->finally('fail')
+  ->build();
   
 // Run it.
 $tm->run('switcher');

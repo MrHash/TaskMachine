@@ -52,7 +52,7 @@ final class TaskFactory implements FactoryInterface
     private $expression_engine;
 
     /**
-     * @param array $defaultss_map
+     * @param array $class_map
      * @param ExpressionLanguage|null $expression_engine
      */
     public function __construct(array $class_map = [], ExpressionLanguage $expression_engine = null)
