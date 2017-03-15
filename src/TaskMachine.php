@@ -18,35 +18,34 @@ class TaskMachine
 {
     private $factory;
 
+    private $builds;
+
     private $tasks = [];
 
     private $handlers = [];
 
     private $machines = [];
 
-    private $builds = [];
-
     public function __construct(FactoryInterface $factory = null)
     {
         $this->factory = $factory ?? new TaskFactory;
     }
 
-    public function task($name, $handler): TaskBuilder
+    public function task(string $name, $handler): TaskBuilder
     {
         $this->tasks[$name] = new TaskBuilder(new TaskSchema);
         $this->handlers[$name] = $handler;
         return $this->tasks[$name];
     }
 
-    public function machine($name): MachineBuilder
+    public function machine(string $name): MachineBuilder
     {
         $this->machines[$name] = (new MachineBuilder($this, new MachineSchema))->name($name);
         return $this->machines[$name];
     }
 
-    public function build($name, array $defaults = []): TaskMachine
+    public function build(string $name, array $defaults = []): TaskMachine
     {
-        // build machine
         $result = $this->machines[$name]->buildConfig($defaults);
 
         if ($result instanceof Error) {
@@ -63,8 +62,12 @@ class TaskMachine
         return $this;
     }
 
-    public function run($name, array $params = []): OutputInterface
+    public function run(string $name, array $params = []): OutputInterface
     {
+        if (!isset($this->builds[$name])) {
+            throw new \RuntimeException("Machine '$name' not found or built");
+        }
+
         return (new ArrayStateMachineBuilder($this->builds[$name], $this->factory))
             ->build()
             ->execute(new Input($params));

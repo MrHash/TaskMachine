@@ -6,12 +6,12 @@ use Shrink0r\PhpSchema\BuilderStack;
 
 class MachineBuilderStack extends BuilderStack
 {
-    public function finally($task): MachineBuilder
+    public function finally(string $task): MachineBuilder
     {
         return $this->rewind()->finally($task);
     }
 
-    public function task($task): MachineBuilderStack
+    public function task(string $task): MachineBuilderStack
     {
         return $this->rewind()->task($task);
     }
@@ -40,7 +40,7 @@ class MachineBuilderStack extends BuilderStack
         return $this;
     }
 
-    public function then($target): MachineBuilderStack
+    public function then(string $target): MachineBuilderStack
     {
         return $this->transitions->{$target};
     }

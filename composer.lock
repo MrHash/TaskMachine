@@ -357,12 +357,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shrink0r/workflux.git",
-                "reference": "67506c79f1ae506a525aca2330f092f46dbbde9b"
+                "reference": "517bc3689a014f1d8b0fb97d15a6a0e3d94ed687"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/67506c79f1ae506a525aca2330f092f46dbbde9b",
-                "reference": "67506c79f1ae506a525aca2330f092f46dbbde9b",
+                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/517bc3689a014f1d8b0fb97d15a6a0e3d94ed687",
+                "reference": "517bc3689a014f1d8b0fb97d15a6a0e3d94ed687",
                 "shasum": ""
             },
             "require": {
@@ -402,7 +402,7 @@
                 "workflow",
                 "workflux"
             ],
-            "time": "2017-03-15 18:57:06"
+            "time": "2017-03-15 20:42:50"
         },
         {
             "name": "symfony/cache",

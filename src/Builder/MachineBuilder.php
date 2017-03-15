@@ -23,12 +23,12 @@ class MachineBuilder extends Builder
         return $state;
     }
 
-    public function task($name)
+    public function task(string $name)
     {
         return $this->states->{$name};
     }
 
-    public function finally($name)
+    public function finally(string $name)
     {
         return $this->states->{$name}->final(true)->transitions([])->rewind();
     }
