@@ -24,6 +24,8 @@ class TaskMachine
 
     private $machines = [];
 
+    private $builds = [];
+
     public function __construct(FactoryInterface $factory = null)
     {
         $this->factory = $factory ?? new TaskFactory;
@@ -44,37 +46,26 @@ class TaskMachine
 
     public function build($name, array $defaults = []): TaskMachine
     {
+        // build machine
         $result = $this->machines[$name]->buildConfig($defaults);
 
         if ($result instanceof Error) {
             throw new ConfigError('Invalid taskmachine configuration given: '.print_r($result->unwrap(), true));
         }
 
-        // haven't worked out how to merge the builders so tasks are merged here for now
+        // add handler implementor to config
         $schema = $result->unwrap();
         foreach ($schema['states'] as $task => $config) {
-            if (!isset($this->tasks[$task])) {
-                throw new ConfigError("Task '$task' has not been defined.");
-            }
-
-            $result = $this->tasks[$task]->build();
-            if ($result instanceof Error) {
-                throw new ConfigError('Invalid task configuration given: '.print_r($result->unwrap(), true));
-            }
-
-            $taskConfig = $result->unwrap();
-            $taskConfig['settings']['_handler'] = $this->handlers[$task];
-            $schema['states'][$task] = array_replace_recursive($config, $taskConfig);
+            $schema['states'][$task]['settings']['_handler'] = $this->handlers[$task];
         }
-        // **
+        $this->builds[$name] = $schema;
 
-        $this->schema[$schema['name']] = $schema;
         return $this;
     }
 
     public function run($name, array $params = []): OutputInterface
     {
-        return (new ArrayStateMachineBuilder($this->schema[$name], $this->factory))
+        return (new ArrayStateMachineBuilder($this->builds[$name], $this->factory))
             ->build()
             ->execute(new Input($params));
     }
