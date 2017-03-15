@@ -357,12 +357,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shrink0r/workflux.git",
-                "reference": "56dbcfd59bf68dd2a5e5c601103911571ed22209"
+                "reference": "67506c79f1ae506a525aca2330f092f46dbbde9b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/56dbcfd59bf68dd2a5e5c601103911571ed22209",
-                "reference": "56dbcfd59bf68dd2a5e5c601103911571ed22209",
+                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/67506c79f1ae506a525aca2330f092f46dbbde9b",
+                "reference": "67506c79f1ae506a525aca2330f092f46dbbde9b",
                 "shasum": ""
             },
             "require": {
@@ -402,7 +402,7 @@
                 "workflow",
                 "workflux"
             ],
-            "time": "2017-03-14 20:35:02"
+            "time": "2017-03-15 18:57:06"
         },
         {
             "name": "symfony/cache",
@@ -1139,16 +1139,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.7.15",
+            "version": "5.7.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "b99112aecc01f62acf3d81a3f59646700a1849e5"
+                "reference": "dafc78e2a7d12139b0e97078d1082326bd09363d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b99112aecc01f62acf3d81a3f59646700a1849e5",
-                "reference": "b99112aecc01f62acf3d81a3f59646700a1849e5",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/dafc78e2a7d12139b0e97078d1082326bd09363d",
+                "reference": "dafc78e2a7d12139b0e97078d1082326bd09363d",
                 "shasum": ""
             },
             "require": {
@@ -1217,7 +1217,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-03-02T15:22:43+00:00"
+            "time": "2017-03-15T13:02:34+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

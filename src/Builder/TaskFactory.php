@@ -2,12 +2,15 @@
 
 namespace TaskMachine\Builder;
 
+use Auryn\Injector;
 use Ds\Map;
 use Shrink0r\Monatic\Maybe;
 use Shrink0r\PhpSchema\Factory as PhpSchemaFactory;
 use Shrink0r\PhpSchema\Schema;
 use Shrink0r\PhpSchema\SchemaInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use TaskMachine\Handler\CallableTaskHandler;
+use TaskMachine\Handler\TaskHandlerInterface;
 use TaskMachine\Task\FinalTask;
 use TaskMachine\Task\InitialTask;
 use TaskMachine\Task\InteractiveTask;
@@ -47,6 +50,16 @@ final class TaskFactory implements FactoryInterface
     private static $default_validation_schema = [ ':any_name:' => [ 'type' => 'any' ] ];
 
     /**
+     * @var Injector $injector
+     */
+    private $injector;
+
+    /**
+     * @var mixed[] $class_map
+     */
+    private $class_map;
+
+    /**
      * @var ExpressionLanguage $expression_engine
      */
     private $expression_engine;
@@ -55,8 +68,12 @@ final class TaskFactory implements FactoryInterface
      * @param array $class_map
      * @param ExpressionLanguage|null $expression_engine
      */
-    public function __construct(array $class_map = [], ExpressionLanguage $expression_engine = null)
-    {
+    public function __construct(
+        Injector $injector = null,
+        array $class_map = [],
+        ExpressionLanguage $expression_engine = null
+    ) {
+        $this->injector = $injector ?? new Injector;
         $this->expression_engine = $expression_engine ?? new ExpressionLanguage;
         $this->class_map = new Map(array_merge(self::$default_classes, $class_map));
     }
@@ -73,6 +90,7 @@ final class TaskFactory implements FactoryInterface
         $state_implementor = $this->resolveStateImplementor($state);
         $settings = $state->settings->get() ?? [];
         $settings['_output'] = $state->output->get() ?? [];
+        $settings['_handler'] = $this->resolveHandler($settings['_handler']);
         $state_instance = new $state_implementor(
             $name,
             new Settings($settings),
@@ -181,5 +199,22 @@ final class TaskFactory implements FactoryInterface
     private function createValidationSchema(string $name, array $schema_definition): SchemaInterface
     {
         return new Schema($name, [ 'type' => 'assoc', 'properties' => $schema_definition ], new PhpSchemaFactory);
+    }
+
+    /**
+     * @param mixed $handler
+     *
+     * @return TaskHandlerInterface
+     */
+    private function resolveHandler($handler): TaskHandlerInterface
+    {
+        if (is_string($handler) && class_exists($handler)) {
+            // @todo interface impl check
+            return $this->injector->make($handler);
+        } elseif ($handler instanceof TaskHandlerInterface) {
+            return $handler;
+        } else {
+            return new CallableTaskHandler($handler, $this->injector);
+        }
     }
 }
