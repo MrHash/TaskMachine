@@ -4,13 +4,12 @@ namespace TaskMachine\Builder;
 
 use Shrink0r\PhpSchema\Builder;
 use Shrink0r\PhpSchema\SchemaInterface;
-use TaskMachine\TaskMachine;
 
 class MachineBuilder extends Builder
 {
     private $context;
 
-    public function __construct(TaskMachine $context, SchemaInterface $schema = null)
+    public function __construct(TaskMachineBuilder $context, SchemaInterface $schema = null)
     {
         $this->context = $context;
         parent::__construct($schema);
