@@ -70,8 +70,6 @@ class TaskMachine
             }
 
             $taskConfig = $result->unwrap();
-            // add the handler to the state config @todo this after build phase?
-            $taskConfig['settings']['_handler'] = $this->getTaskHandler($task);
             $schema['states'][$task] = array_replace_recursive($config, $taskConfig);
         }
         // **
@@ -91,24 +89,13 @@ class TaskMachine
             ->execute(new Input($params));
     }
 
-    private function getTaskHandler($name)
-    {
-        $handler = $this->handlers[$name];
-        if (is_string($handler) && class_exists($handler)) {
-            return $this->injector->make($handler);
-        } elseif ($handler instanceof TaskHandlerInterface) {
-            return $handler;
-        } else {
-            return new CallableTaskHandler($handler, $this->injector);
-        }
-    }
-
-    // would be nice to have an ArrayStateMachineBuilder in workflux
     private function realizeConfig(array $config): array
     {
         $states = [];
         $transitions = [];
         foreach ($config as $name => $state_config) {
+            // build handler here
+            $state_config['settings']['_handler'] = $this->realizeHandler($name);
             $states[] = $this->factory->createState($name, $state_config);
             if (!is_array($state_config)) {
                 continue;
@@ -121,5 +108,17 @@ class TaskMachine
             }
         }
         return [$states, $transitions];
+    }
+
+    private function realizeHandler($name)
+    {
+        $handler = $this->handlers[$name];
+        if (is_string($handler) && class_exists($handler)) {
+            return $this->injector->make($handler);
+        } elseif ($handler instanceof TaskHandlerInterface) {
+            return $handler;
+        } else {
+            return new CallableTaskHandler($handler, $this->injector);
+        }
     }
 }
