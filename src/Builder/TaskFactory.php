@@ -39,7 +39,7 @@ final class TaskFactory implements FactoryInterface
     private static $default_classes = [
         'initial' => InitialTask::CLASS,
         'interactive' => InteractiveTask::CLASS,
-        'state' => Task::CLASS,
+        'task' => Task::CLASS,
         'final' => FinalTask::CLASS,
         'transition' => Transition::CLASS
     ];
@@ -88,9 +88,11 @@ final class TaskFactory implements FactoryInterface
     {
         $state = Maybe::unit($state);
         $state_implementor = $this->resolveStateImplementor($state);
-        $settings = $state->settings->get() ?? [];
+        //@todo add validation as input/output_schema
+        $settings = $state->input->get() ?? [];
         $settings['_output'] = $state->output->get() ?? [];
-        $settings['_handler'] = $this->resolveHandler($settings['_handler']);
+        $settings['_map'] = $state->map->get() ?? [];
+        $settings['_handler'] = $this->resolveHandler($state->handler->get());
         $state_instance = new $state_implementor(
             $name,
             new Settings($settings),
@@ -159,7 +161,7 @@ final class TaskFactory implements FactoryInterface
                 $state_implementor = $this->class_map->get('interactive');
                 break;
             default:
-                $state_implementor = $this->class_map->get('state');
+                $state_implementor = $this->class_map->get('task');
         }
         $state_implementor = $state->class->get() ?? $state_implementor;
         if (!in_array(StateInterface::CLASS, class_implements($state_implementor))) {

@@ -15,22 +15,7 @@ class MachineBuilder extends Builder
         parent::__construct($schema);
     }
 
-    public function first($name)
-    {
-        $state = $this->states->{$name};
-        $state->initial(true);
-        return $state;
-    }
-
-    public function task(string $name)
-    {
-        return $this->states->{$name};
-    }
-
-    public function finally(string $name)
-    {
-        return $this->states->{$name}->final(true)->transitions([])->rewind();
-    }
+    //@todo override builder methods
 
     public function buildConfig(array $defaults = [])
     {
@@ -39,11 +24,6 @@ class MachineBuilder extends Builder
 
     public function build(array $defaults = [])
     {
-        return $this->context->build($this->valueOf('name'), $defaults);
-    }
-
-    public function getStackImplementor(): String
-    {
-        return MachineBuilderStack::CLASS;
+        return $this->context->build($defaults);
     }
 }

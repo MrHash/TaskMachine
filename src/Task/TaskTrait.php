@@ -168,6 +168,7 @@ trait TaskTrait
         $mapping = $this->getSetting('_map', []);
         $input = $input->withParams($this->settings->withoutParams(['_handler', '_map'])->toArray());
         foreach ($handler->execute($input) as $key => $value) {
+            //@todo evaluate mappings
             $name = $mapping[$key] ?? $key;
             $output[$name] = $value;
         }

@@ -20,14 +20,8 @@ final class MachineSchema implements SchemaInterface
         $this->internal_schema = new Schema('taskmachine', [
             'type' => 'assoc',
             'properties' => [
-                "name" => [ "type" => "string" ],
-                "class" => [ "type" => "fqcn", "required" => false ],
-                "states" => [
-                    "type" => "assoc",
-                    "properties" => [ ":any_name:" => $this->getStateSchema() ]
-                ]
-            ],
-            "customTypes" => [ "transition" => $this->getTransitionSchema() ]
+                ":any_name:" => $this->getTaskSchema()
+            ]
         ], new Factory);
     }
 
@@ -94,93 +88,44 @@ final class MachineSchema implements SchemaInterface
     }
 
     /**
-     * Return php-schema definition that reflects the structural expectations towards state (yaml)data.
+     * Return php-schema definition that reflects the structural expectations towards task data.
      *
      * @return mixed[]
      */
-    private function getStateSchema(): array
+    private function getTaskSchema(): array
     {
         return [
             "type" => "assoc" ,
             "required" => false,
             "properties" => [
-                "class" => [ "type" => "fqcn", "required" => false ],
-                "initial" => [
-                    "type" => "bool",
-                    "required" => false
-                ],
-                "final" => [
-                    "type" => "bool",
-                    "required" => false
-                ],
-                "interactive" => [
-                    "type" => "bool",
-                    "required" => false
-                ],
-                "output" => [
+                "handler" => [ "type" => "any", 'required' => false ], // @todo callable, object or null
+                "initial" => [ "type" => "bool", "required" => false ],
+                "final" => [ "type" => "bool", "required" => false ],
+                "interactive" => [ "type" => "bool", "required" => false ],
+                "input" => [
                     "type" => "assoc",
                     "required" => false,
                     "properties" => [
                         ":any_name:" => [ "type" => "any" ]
                     ]
                 ],
-                "input_schema" =>  [
+                "map" => [
                     "type" => "assoc",
                     "required" => false,
                     "properties" => [
                         ":any_name:" => [ "type" => "any" ]
                     ]
                 ],
-                "output_schema" =>  [
+                "transition" =>  [
+                    "type" => "any", //@todo array or string
+                    "required" => false //@todo required
+                ],
+                "validate" =>  [
                     "type" => "assoc",
                     "required" => false,
                     "properties" => [
                         ":any_name:" => [ "type" => "any" ]
                     ]
-                ],
-                "settings" =>  [
-                    "type" => "assoc",
-                    "required" => false,
-                    "properties" => [
-                        ":any_name:" => [ "type" => "any" ]
-                    ]
-                ],
-                "transitions" =>  [
-                    "type" => "assoc",
-                    "required" => true,
-                    "properties" => [
-                        ":any_name:" => [
-                            "type" => "enum" ,
-                            "required" => false,
-                            "one_of" => [ "string", "&transition" ]
-                        ]
-                    ]
-                ]
-            ]
-        ];
-    }
-
-    /**
-     * Return php-schema definition that reflects the structural expectations towards transition (yaml)data.
-     *
-     * @return mixed[]
-     */
-    private function getTransitionSchema(): array
-    {
-        return [
-            "type" => "assoc",
-            "properties" => [
-                "class" => [ "type" => "fqcn", "required" => false ],
-                "settings" =>  [
-                    "type" => "assoc",
-                    "required" => false,
-                    "properties" => [
-                        ":any_name:" => [ "type" => "any" ]
-                    ],
-                ],
-                "when" => [
-                    "type" => "any",
-                    "required" => false
                 ]
             ]
         ];

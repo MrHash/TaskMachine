@@ -20,14 +20,7 @@ final class TaskSchema implements SchemaInterface
         $this->internal_schema = new Schema('task', [
             'type' => 'assoc',
             'properties' => [
-                "input_schema" =>  [
-                    "type" => "assoc",
-                    "required" => false,
-                    "properties" => [
-                        ":any_name:" => [ "type" => "any" ]
-                    ]
-                ],
-                "output_schema" =>  [
+                "validate" =>  [
                     "type" => "assoc",
                     "required" => false,
                     "properties" => [

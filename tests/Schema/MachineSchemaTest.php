@@ -23,13 +23,13 @@ final class MachineSchemaTest extends TestCase
     public function testGetCustomTypes()
     {
         $schema = new MachineSchema;
-        $this->assertEquals([ 'transition' ], array_keys($schema->getCustomTypes()));
+        $this->assertEquals([], array_keys($schema->getCustomTypes()));
     }
 
     public function testGetProperties()
     {
         $schema = new MachineSchema;
-        $expected_keys = [ 'class', 'name', 'states' ];
+        $expected_keys = [ ':any_name:' ];
         foreach (array_keys($schema->getProperties()) as $key) {
             $this->assertContains($key, $expected_keys);
         }

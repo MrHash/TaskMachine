@@ -33,11 +33,11 @@ class TaskMachineBuilder
 
     public function machine(string $name): MachineBuilder
     {
-        $this->machines[$name] = (new MachineBuilder($this, new MachineSchema))->name($name);
+        $this->machines[$name] = (new MachineBuilder($this, new MachineSchema));
         return $this->machines[$name];
     }
 
-    public function build(string $name, array $defaults = []): TaskMachine
+    public function build(array $defaults = []): TaskMachine
     {
         foreach ($this->machines as $name => $builder) {
             $result = $builder->buildConfig($defaults);
@@ -46,11 +46,23 @@ class TaskMachineBuilder
                 throw new ConfigError('Invalid taskmachine configuration given: '.print_r($result->unwrap(), true));
             }
 
-            // add handler implementor to config
+            // merge task config and handler
             $schema = $result->unwrap();
-            foreach ($schema['states'] as $task => $config) {
-                $schema['states'][$task]['settings']['_handler'] = $this->handlers[$task];
+            foreach ($schema as $task => $config) {
+                if (!isset($this->tasks[$task])) {
+                    throw new ConfigError("Task definition for '$task' not found");
+                }
+
+                $result = $this->tasks[$task]->build();
+
+                if ($result instanceof Error) {
+                    throw new ConfigError('Invalid task configuration given: '.print_r($result->unwrap(), true));
+                }
+
+                $schema[$task] = array_replace_recursive($schema[$task], $result->unwrap());
+                $schema[$task]['handler'] = $this->handlers[$task];
             }
+
             $schemas[$name] = $schema;
         }
 

@@ -26,7 +26,7 @@ class TaskMachine
             throw new \RuntimeException("Machine '$name' not found");
         }
 
-        return (new ArrayTaskMachineBuilder($this->schemas[$name], $this->factory))
+        return (new ArrayTaskMachineBuilder($name, $this->schemas[$name], $this->factory))
             ->build()
             ->execute(new Input($params));
     }
