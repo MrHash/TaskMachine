@@ -72,7 +72,7 @@ echo $output->get('closing');
 ## Conditional branching
 Machines can branch to different tasks based on conditions written in Symfony Expression Language.
 ```php
-$tmb = new TaskMachine(new TaskFactory($myInjector));
+$tmb = new TaskMachineBuilder(new TaskFactory($myInjector));
 
 // A task which outputs a random true or false result
 $tmb->task('process', function () {
