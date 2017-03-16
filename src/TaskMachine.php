@@ -2,8 +2,8 @@
 
 namespace TaskMachine;
 
+use TaskMachine\Builder\ArrayTaskMachineBuilder;
 use TaskMachine\Builder\TaskFactory;
-use Workflux\Builder\ArrayStateMachineBuilder;
 use Workflux\Builder\FactoryInterface;
 use Workflux\Param\Input;
 use Workflux\Param\OutputInterface;
@@ -23,10 +23,10 @@ class TaskMachine
     public function run(string $name, array $params = []): OutputInterface
     {
         if (!isset($this->schemas[$name])) {
-            throw new \RuntimeException("Machine '$name' not found or built");
+            throw new \RuntimeException("Machine '$name' not found");
         }
 
-        return (new ArrayStateMachineBuilder($this->schemas[$name], $this->factory))
+        return (new ArrayTaskMachineBuilder($this->schemas[$name], $this->factory))
             ->build()
             ->execute(new Input($params));
     }
