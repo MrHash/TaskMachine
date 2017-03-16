@@ -9,18 +9,18 @@ Define micro-service tasks and arrange them into state machine managed flows wit
 ## Simple pipeline
 We define two simple inline tasks which are independent. The machine executes the two tasks in order and then finishes.
 ```php
-$tm = new TaskMachine;
+$tmb = new TaskMachineBuilder;
 
-$tm->task('hello', function () {
+$tmb->task('hello', function () {
   echo 'Hello World';
 });
 
-$tm->task('goodbye', function () {
+$tmb->task('goodbye', function () {
   echo 'Goodbye World';
 });
 
-// Define a machine
-$tm->machine('greetings')
+// Define and build a machine
+$tm = $tmb->machine('greetings')
   // specify an initial task and transition
   ->first('hello')->then('goodbye')
    // specify a final task
@@ -35,9 +35,9 @@ $tm->run('greetings');
 Now we introduce some more tasks with DI. Tasks are isolated by definition and optionally have expected inputs and outputs.
 ```php
 // Bootstrap your own Auryn injector and throw it in
-$tm = new TaskMachine($myInjector);
+$tmb = new TaskMachineBuilder(new TaskFactory($myInjector));
 
-$tm->task(
+$tmb->task(
   'translate',
   function (InputInterface $input, MyTranslationInterface $translator) {
     // Auryn injects service fully constructed. Run your things.
@@ -47,16 +47,16 @@ $tm->task(
 );
 
 // Input from previous task is injectable and immutable
-$tm->task('echo', function(InputInterface $input) {
+$tmb->task('echo', function(InputInterface $input) {
   echo $input->get('text');
 });
 
-$tm->task('goodbye', function () {
+$tmb->task('goodbye', function () {
   return ['closing' => 'Goodbye World'];
 });
 
- // Define a machine
-$tm->machine('translator')
+ // Define and build machine
+$tm = $tmb->machine('translator')
   ->first('translate')->then('echo')
   ->task('echo')->then('goodbye')
   ->finally('goodbye')
@@ -72,23 +72,23 @@ echo $output->get('closing');
 ## Conditional branching
 Machines can branch to different tasks based on conditions written in Symfony Expression Language.
 ```php
-$tm = new TaskMachine($myInjector);
+$tmb = new TaskMachine(new TaskFactory($myInjector));
 
 // A task which outputs a random true or false result
-$tm->task('process', function () {
+$tmb->task('process', function () {
   $result = (bool)random_int(0,1);
   return ['success' => $result];
 });
 
 // Task with your instantiated object which implements TaskHandlerInterface
-$tm->task('finish', new Finisher($myService));
+$tmb->task('finish', new Finisher($myService));
 
 // Task with your handler which implements TaskHandlerInterface
 // Your dependencies are injected
-$tm->task('fail', MyCustomServiceInterface::class);
+$tmb->task('fail', MyCustomServiceInterface::class);
 
-// Define a machine with multiple final tasks
-$tm->machine('switcher')
+// Define and build a machine with different final outcomes
+$tm = $tmb->machine('switcher')
   ->first('process')
     // Specify switch conditions and subsequent tasks
     ->when([
