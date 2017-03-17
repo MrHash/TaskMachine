@@ -22,9 +22,12 @@ $tmb->task('goodbye', function () {
 // Define and build a machine
 $tm = $tmb->machine('greetings')
   // specify an initial task and transition
-  ->first('hello')->then('goodbye')
+  ->hello([
+    'initial' => true,
+    'transition' => 'goodbye'
+  ])
    // specify a final task
-  ->finally('goodbye')
+  ->goodbye([ 'final' => true' ])
   ->build();
 
 // Run the machine.
@@ -57,9 +60,12 @@ $tmb->task('goodbye', function () {
 
  // Define and build machine
 $tm = $tmb->machine('translator')
-  ->first('translate')->then('echo')
-  ->task('echo')->then('goodbye')
-  ->finally('goodbye')
+  ->translate([
+    'initial' => true,
+    'transition' => 'echo
+  ])
+  ->echo([ 'transition' => 'goodbye' ])
+  ->goodbye([ 'final' => true ])
   ->build();
 
 // Run with input and then echo the output from the last task
@@ -89,14 +95,16 @@ $tmb->task('fail', MyCustomServiceInterface::class);
 
 // Define and build a machine with different final outcomes
 $tm = $tmb->machine('switcher')
-  ->first('process')
+  ->process([
+    'initial' => true,
     // Specify switch conditions and subsequent tasks
-    ->when([
-       'output.success' => 'finish',
-       '!output.success' => 'fail'
-    ])
-  ->finally('finish')
-  ->finally('fail')
+    'transition' => [
+      'output.success' => 'finish',
+      '!output.success' => 'fail'
+    ]
+  ])
+  ->finish([ 'final' => true ])
+  ->fail([ 'final' => true ])
   ->build();
   
 // Run it.
