@@ -11,6 +11,7 @@ We define two simple inline tasks which are independent. The machine executes th
 ```php
 $tmb = new TaskMachineBuilder;
 
+// Define some tasks
 $tmb->task('hello', function () {
   echo 'Hello World';
 });
@@ -40,6 +41,7 @@ Now we introduce some more tasks with DI. Tasks are isolated by definition and o
 // Bootstrap your own Auryn injector and throw it in
 $tmb = new TaskMachineBuilder(new TaskFactory($myInjector));
 
+// Define some tasks
 $tmb->task(
   'translate',
   function (InputInterface $input, MyTranslationInterface $translator) {
@@ -80,8 +82,9 @@ Machines can branch to different tasks based on conditions written in Symfony Ex
 ```php
 $tmb = new TaskMachineBuilder(new TaskFactory($myInjector));
 
-// A task which outputs a random true or false result
+// Define some tasks
 $tmb->task('process', function () {
+  // This outputs a random true or false result
   $result = (bool)random_int(0,1);
   return ['success' => $result];
 });
@@ -97,7 +100,7 @@ $tmb->task('fail', MyCustomServiceInterface::class);
 $tm = $tmb->machine('switcher')
   ->process([
     'initial' => true,
-    // Specify switch conditions and subsequent tasks
+    // Specify switch conditions to subsequent tasks
     'transition' => [
       'output.success' => 'finish',
       '!output.success' => 'fail'
