@@ -47,7 +47,7 @@ final class TaskFactory implements FactoryInterface
     /**
      * @var mixed[] $default_validation_schema
      */
-    private static $default_validation_schema = [ ':any_name:' => [ 'type' => 'any' ] ];
+    private static $default_validation_schema = [':any_name:' => ['type' => 'any']];
 
     /**
      * @var Injector $injector
@@ -88,7 +88,6 @@ final class TaskFactory implements FactoryInterface
     {
         $state = Maybe::unit($state);
         $state_implementor = $this->resolveStateImplementor($state);
-        //@todo add validation as input/output_schema
         $settings = $state->input->get() ?? [];
         $settings['_map'] = $state->map->get() ?? [];
         $settings['_handler'] = $this->resolveHandler($state->handler->get());
@@ -165,7 +164,7 @@ final class TaskFactory implements FactoryInterface
         $state_implementor = $state->class->get() ?? $state_implementor;
         if (!in_array(StateInterface::CLASS, class_implements($state_implementor))) {
             throw new MissingImplementation(
-                'Trying to use a custom-state that does not implement required '.StateInterface::CLASS
+                'Trying to use a custom task that does not implement required '.StateInterface::CLASS
             );
         }
         return $state_implementor;
@@ -173,7 +172,7 @@ final class TaskFactory implements FactoryInterface
 
     /**
      * @param string $name
-     * @param  Maybe $state
+     * @param Maybe $state
      *
      * @return ValidatorInterface
      */
@@ -199,7 +198,7 @@ final class TaskFactory implements FactoryInterface
      */
     private function createValidationSchema(string $name, array $schema_definition): SchemaInterface
     {
-        return new Schema($name, [ 'type' => 'assoc', 'properties' => $schema_definition ], new PhpSchemaFactory);
+        return new Schema($name, ['type' => 'assoc', 'properties' => $schema_definition], new PhpSchemaFactory);
     }
 
     /**
@@ -209,8 +208,7 @@ final class TaskFactory implements FactoryInterface
      */
     private function resolveHandler($handler): TaskHandlerInterface
     {
-        if (is_string($handler) && class_exists($handler)) {
-            // @todo interface impl check
+        if (is_string($handler) && in_array(TaskHandlerInterface::class, class_implements($handler))) {
             return $this->injector->make($handler);
         } elseif ($handler instanceof TaskHandlerInterface) {
             return $handler;
