@@ -178,27 +178,37 @@ final class TaskFactory implements FactoryInterface
      */
     private function createValidator(string $name, Maybe $state): ValidatorInterface
     {
-        return new Validator(
-            $this->createValidationSchema(
-                $name.self::SUFFIX_IN,
-                $state->input_schema->get() ?? self::$default_validation_schema
-            ),
-            $this->createValidationSchema(
-                $name.self::SUFFIX_OUT,
-                $state->output_schema->get() ?? self::$default_validation_schema
-            )
-        );
+        return new Validator(...$this->createValidationSchemas($name, (array)$state->validate->get()));
     }
 
     /**
      * @param string $name
-     * @param array $schema_definition
+     * @param array $validation
      *
-     * @return SchemaInterface
+     * @return SchemaInterface[]
      */
-    private function createValidationSchema(string $name, array $schema_definition): SchemaInterface
+    private function createValidationSchemas(string $name, array $validation = []): array
     {
-        return new Schema($name, ['type' => 'assoc', 'properties' => $schema_definition], new PhpSchemaFactory);
+        $inputSchema = self::$default_validation_schema;
+        $outputSchema = self::$default_validation_schema;
+
+        foreach ($validation as $expression => $type) {
+            $path = explode('.', $expression);
+            switch ($path[0]) {
+                case 'input':
+                    $inputSchema[$path[1]] = ['type' => $type];
+                    break;
+                case 'output':
+                    $outputSchema[$path[1]] = ['type' => $type];
+                default:
+                    throw new ConfigError("Invalid validation expression '$path[0]' in task '$name'");
+            }
+        }
+
+        return [
+            new Schema($name.self::SUFFIX_IN, ['type' => 'assoc', 'properties' => $inputSchema], new PhpSchemaFactory),
+            new Schema($name.self::SUFFIX_OUT, ['type' => 'assoc', 'properties' => $outputSchema], new PhpSchemaFactory)
+        ];
     }
 
     /**
@@ -208,7 +218,7 @@ final class TaskFactory implements FactoryInterface
      */
     private function resolveHandler($handler): TaskHandlerInterface
     {
-        if (is_string($handler) && in_array(TaskHandlerInterface::class, class_implements($handler))) {
+        if (is_string($handler) && class_exists($handler)) {
             return $this->injector->make($handler);
         } elseif ($handler instanceof TaskHandlerInterface) {
             return $handler;

@@ -62,6 +62,7 @@ trait TaskTrait
      */
     public function execute(InputInterface $input): OutputInterface
     {
+        $input = $input->withParams($this->settings->toArray());
         $this->validator->validateInput($this, $input);
         $output = $this->generateOutput($input);
         $this->validator->validateOutput($this, $output);
