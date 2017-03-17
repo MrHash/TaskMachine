@@ -134,27 +134,15 @@ trait TaskTrait
      */
     private function generateOutput(InputInterface $input): OutputInterface
     {
+        $output = $this->generateOutputParams($input);
+
         return new Output(
             $this->name,
             array_merge(
-                $this->evaluateInputExports($input),
-                $this->generateOutputParams($input)
+                $output,
+                $this->evaluateOutputMapping($input, new Output($this->name, $output))
             )
         );
-    }
-
-    /**
-     * @param  InputInterface $input
-     *
-     * @return mixed[]
-     */
-    private function evaluateInputExports(InputInterface $input): array
-    {
-        $exports = [];
-        foreach ($this->getSetting('_output', []) as $key => $value) {
-            $exports[$key] = $this->expression_engine->evaluate($value, [ 'input' => $input ]);
-        }
-        return $exports;
     }
 
     /**
@@ -165,14 +153,19 @@ trait TaskTrait
     private function generateOutputParams(InputInterface $input): array
     {
         $handler = $this->getSetting('_handler');
-        $mapping = $this->getSetting('_map', []);
         $input = $input->withParams($this->settings->withoutParams(['_handler', '_map'])->toArray());
-        foreach ($handler->execute($input) as $key => $value) {
-            //@todo evaluate mappings
-            $name = $mapping[$key] ?? $key;
-            $output[$name] = $value;
+        return $handler->execute($input);
+    }
+
+    private function evaluateOutputMapping(InputInterface $input, OutputInterface $output)
+    {
+        foreach ($this->getSetting('_map', []) as $expression => $key) {
+            $mappedOutput[$key] = $this->expression_engine->evaluate(
+                $expression,
+                ['input' => $input, 'output' => $output]
+            );
         }
-        return $output ?? [];
+        return $mappedOutput ?? [];
     }
 
     /**

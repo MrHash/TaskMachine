@@ -90,7 +90,6 @@ final class TaskFactory implements FactoryInterface
         $state_implementor = $this->resolveStateImplementor($state);
         //@todo add validation as input/output_schema
         $settings = $state->input->get() ?? [];
-        $settings['_output'] = $state->output->get() ?? [];
         $settings['_map'] = $state->map->get() ?? [];
         $settings['_handler'] = $this->resolveHandler($state->handler->get());
         $state_instance = new $state_implementor(
