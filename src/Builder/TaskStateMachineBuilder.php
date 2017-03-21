@@ -13,7 +13,7 @@ use Workflux\Error\ConfigError;
 use Workflux\StateMachine;
 use Workflux\StateMachineInterface;
 
-class ArrayTaskMachineBuilder implements StateMachineBuilderInterface
+class TaskStateMachineBuilder implements StateMachineBuilderInterface
 {
     /**
      * @var string $name

@@ -6,12 +6,13 @@ use Shrink0r\PhpSchema\Error;
 use TaskMachine\Schema\MachineSchema;
 use TaskMachine\Schema\TaskSchema;
 use TaskMachine\TaskMachine;
+use TaskMachine\TaskMachineInterface;
 use Workflux\Builder\FactoryInterface;
 use Workflux\Error\ConfigError;
 
-class TaskMachineBuilder
+class TaskMachineBuilder implements TaskMachineBuilderInterface
 {
-    private $factory;
+    protected $factory;
 
     private $tasks = [];
 
@@ -37,7 +38,13 @@ class TaskMachineBuilder
         return $this->machines[$name];
     }
 
-    public function build(array $defaults = []): TaskMachine
+    public function build(array $defaults = []): TaskMachineInterface
+    {
+        $schemas = $this->buildMachines($defaults);
+        return new TaskMachine($schemas, $this->factory);
+    }
+
+    protected function buildMachines(array $defaults = []): array
     {
         foreach ($this->machines as $name => $builder) {
             $result = $builder->buildConfig($defaults);
@@ -46,26 +53,30 @@ class TaskMachineBuilder
                 throw new ConfigError('Invalid taskmachine configuration given: '.print_r($result->unwrap(), true));
             }
 
-            // merge task config and handler
             $schema = $result->unwrap();
-            foreach ($schema as $task => $config) {
-                if (!isset($this->tasks[$task])) {
-                    throw new ConfigError("Task definition for '$task' not found");
-                }
-
-                $result = $this->tasks[$task]->build();
-
-                if ($result instanceof Error) {
-                    throw new ConfigError('Invalid task configuration given: '.print_r($result->unwrap(), true));
-                }
-
-                $schema[$task] = array_replace_recursive($schema[$task], $result->unwrap());
-                $schema[$task]['handler'] = $this->handlers[$task];
-            }
-
-            $schemas[$name] = $schema;
+            $schemas[$name] = $this->mergeMachineTasks($schema);
         }
 
-        return new TaskMachine($this->factory, $schemas ?? []);
+        return $schemas ?? [];
+    }
+
+    private function mergeMachineTasks(array $schema): array
+    {
+        foreach ($schema as $task => $config) {
+            if (!isset($this->tasks[$task])) {
+                throw new ConfigError("Task definition for '$task' not found");
+            }
+
+            $result = $this->tasks[$task]->build();
+
+            if ($result instanceof Error) {
+                throw new ConfigError('Invalid task configuration given: '.print_r($result->unwrap(), true));
+            }
+
+            $schema[$task] = array_replace_recursive($schema[$task], $result->unwrap());
+            $schema[$task]['handler'] = $this->handlers[$task];
+        }
+
+        return $schema;
     }
 }

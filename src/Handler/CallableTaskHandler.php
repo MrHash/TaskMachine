@@ -5,7 +5,6 @@ namespace TaskMachine\Handler;
 use Auryn\Injector;
 use Workflux\Param\InputInterface;
 use Workflux\Param\Input;
-use Workflux\Param\Settings;
 
 class CallableTaskHandler implements TaskHandlerInterface
 {

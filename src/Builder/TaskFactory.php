@@ -19,7 +19,6 @@ use Workflux\Builder\FactoryInterface;
 use Workflux\Error\ConfigError;
 use Workflux\Error\MissingImplementation;
 use Workflux\Param\Settings;
-use Workflux\State\InteractiveState;
 use Workflux\State\StateInterface;
 use Workflux\State\Validator;
 use Workflux\State\ValidatorInterface;
@@ -200,6 +199,7 @@ final class TaskFactory implements FactoryInterface
                     break;
                 case 'output':
                     $outputSchema[$path[1]] = ['type' => $type];
+                    break;
                 default:
                     throw new ConfigError("Invalid validation expression '$path[0]' in task '$name'");
             }
