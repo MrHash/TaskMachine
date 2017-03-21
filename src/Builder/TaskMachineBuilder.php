@@ -16,8 +16,6 @@ class TaskMachineBuilder implements TaskMachineBuilderInterface
 
     private $tasks = [];
 
-    private $handlers = [];
-
     private $machines = [];
 
     public function __construct(FactoryInterface $factory = null)
@@ -28,8 +26,14 @@ class TaskMachineBuilder implements TaskMachineBuilderInterface
     public function task(string $name, $handler): TaskBuilder
     {
         $this->tasks[$name] = new TaskBuilder(new TaskSchema);
-        $this->handlers[$name] = $handler;
+        $this->tasks[$name]->handler($handler);
         return $this->tasks[$name];
+    }
+
+    protected function addTask(string $name, array $config)
+    {
+        // @todo handle validation
+        $this->tasks[$name] = $config;
     }
 
     public function machine(string $name): MachineBuilder
@@ -38,43 +42,45 @@ class TaskMachineBuilder implements TaskMachineBuilderInterface
         return $this->machines[$name];
     }
 
-    public function build(array $defaults = []): TaskMachineInterface
+    protected function addMachine(string $name, array $config)
     {
-        $schemas = $this->buildMachines($defaults);
-        return new TaskMachine($schemas, $this->factory);
+        // @todo handle validation
+        $this->machines[$name] = $config;
     }
 
-    protected function buildMachines(array $defaults = []): array
+    public function build(array $defaults = []): TaskMachineInterface
     {
-        foreach ($this->machines as $name => $builder) {
-            $result = $builder->buildConfig($defaults);
-
-            if ($result instanceof Error) {
-                throw new ConfigError('Invalid taskmachine configuration given: '.print_r($result->unwrap(), true));
+        foreach ($this->machines as $name => $config) {
+            if ($config instanceof MachineBuilder) {
+                $result = $config->buildConfig($defaults);
+                if ($result instanceof Error) {
+                    throw new ConfigError('Invalid taskmachine configuration given: '.print_r($result->unwrap(), true));
+                }
+                $config = $result->unwrap();
             }
-
-            $schema = $result->unwrap();
-            $schemas[$name] = $this->mergeMachineTasks($schema);
+            $schemas[$name] = $this->mergeMachineTasks($config);
         }
 
-        return $schemas ?? [];
+        return new TaskMachine($schemas ?? [], $this->factory);
     }
 
     private function mergeMachineTasks(array $schema): array
     {
-        foreach ($schema as $task => $config) {
-            if (!isset($this->tasks[$task])) {
-                throw new ConfigError("Task definition for '$task' not found");
+        foreach ($schema as $name => $config) {
+            if (!isset($this->tasks[$name])) {
+                throw new ConfigError("Task definition for '$name' not found");
             }
 
-            $result = $this->tasks[$task]->build();
-
-            if ($result instanceof Error) {
-                throw new ConfigError('Invalid task configuration given: '.print_r($result->unwrap(), true));
+            $taskConfig = $this->tasks[$name];
+            if ($taskConfig instanceof TaskBuilder) {
+                $result = $this->tasks[$name]->build();
+                if ($result instanceof Error) {
+                    throw new ConfigError('Invalid task configuration given: '.print_r($result->unwrap(), true));
+                }
+                $taskConfig = $result->unwrap();
             }
 
-            $schema[$task] = array_replace_recursive($schema[$task], $result->unwrap());
-            $schema[$task]['handler'] = $this->handlers[$task];
+            $schema[$name] = array_replace_recursive($schema[$name], $taskConfig);
         }
 
         return $schema;

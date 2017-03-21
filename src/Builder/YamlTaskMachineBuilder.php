@@ -3,7 +3,6 @@
 namespace TaskMachine\Builder;
 
 use Symfony\Component\Yaml\Parser;
-use TaskMachine\TaskMachine;
 use TaskMachine\TaskMachineInterface;
 use Workflux\Builder\FactoryInterface;
 use Workflux\Error\ConfigError;
@@ -18,7 +17,7 @@ class YamlTaskMachineBuilder extends TaskMachineBuilder
     {
         foreach ($yamlFilePaths as $yamlFilePath) {
             if (!is_readable($yamlFilePath)) {
-                throw new ConfigError("Trying to load non-existent taskmachine configurtion at: $yamlFilePath");
+                throw new ConfigError("Trying to load non-existent taskmachine configuration at: $yamlFilePath");
             }
         }
 
@@ -33,19 +32,14 @@ class YamlTaskMachineBuilder extends TaskMachineBuilder
             $data = array_replace_recursive($this->parser->parse(file_get_contents($yamlFilePath)), $data ?? []);
         }
 
-        $machines = $data['machines'] ?? [];
-        foreach ($machines as $name => &$machine) {
-            foreach ($machine as $task => &$definition) {
-                if (!isset($data['tasks'][$task])) {
-                    throw new ConfigError("Task definition for '$task' not found");
-                }
-                $definition = array_replace_recursive($definition, $data['tasks'][$task]);
-            }
+        foreach ($data['tasks'] ?? [] as $name => $config) {
+            $this->addTask($name, $config);
         }
 
-        // merge in fluently specified machines
-        $machines = array_replace_recursive($machines, $this->buildMachines());
+        foreach ($data['machines'] ?? [] as $name => $config) {
+            $this->addMachine($name, $config);
+        }
 
-        return new TaskMachine($machines, $this->factory);
+        return parent::build($defaults);
     }
 }
