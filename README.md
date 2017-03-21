@@ -28,7 +28,7 @@ $tm = $tmb->machine('greetings')
     'transition' => 'goodbye'
   ])
    // specify a final task
-  ->goodbye([ 'final' => true' ])
+  ->goodbye(['final' => true'])
   ->build();
 
 // Run the machine.
@@ -67,7 +67,7 @@ $tm = $tmb->machine('translator')
     'transition' => 'echo
   ])
   ->echo([ 'transition' => 'goodbye' ])
-  ->goodbye([ 'final' => true ])
+  ->goodbye(['final' => true])
   ->build();
 
 // Run with input and then echo the output from the last task
@@ -106,8 +106,8 @@ $tm = $tmb->machine('switcher')
       '!output.success' => 'fail'
     ]
   ])
-  ->finish([ 'final' => true ])
-  ->fail([ 'final' => true ])
+  ->finish(['final' => true])
+  ->fail(['final' => true])
   ->build();
   
 // Run it.
