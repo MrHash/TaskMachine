@@ -48,6 +48,7 @@ class TaskMachineBuilder implements TaskMachineBuilderInterface
 
     public function merge(TaskMachineBuilderInterface $builder): TaskMachineBuilderInterface
     {
+        $builder->build();
         $this->tasks = array_merge($this->tasks, $builder->getTasks());
         $this->machines = array_merge($this->machines, $builder->getMachines());
 

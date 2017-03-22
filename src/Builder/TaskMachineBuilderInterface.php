@@ -11,4 +11,6 @@ interface TaskMachineBuilderInterface
     public function machine(string $name): MachineBuilder;
 
     public function build(): TaskMachineInterface;
+
+    public function merge(TaskMachineBuilderInterface $builder): TaskMachineBuilderInterface;
 }
