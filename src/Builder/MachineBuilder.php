@@ -17,13 +17,13 @@ class MachineBuilder extends Builder
 
     //@todo override builder methods
 
-    public function buildConfig(array $defaults = [])
+    public function _build()
     {
-        return parent::build($defaults);
+        return parent::build();
     }
 
     public function build(array $defaults = [])
     {
-        return $this->context->build($defaults);
+        return $this->context->build();
     }
 }

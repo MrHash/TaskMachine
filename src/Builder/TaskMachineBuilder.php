@@ -14,9 +14,9 @@ class TaskMachineBuilder implements TaskMachineBuilderInterface
 {
     protected $factory;
 
-    private $tasks = [];
+    protected $tasks = [];
 
-    private $machines = [];
+    protected $machines = [];
 
     public function __construct(FactoryInterface $factory = null)
     {
@@ -25,15 +25,14 @@ class TaskMachineBuilder implements TaskMachineBuilderInterface
 
     public function task(string $name, $handler): TaskBuilder
     {
-        $this->tasks[$name] = new TaskBuilder(new TaskSchema);
+        $this->tasks[$name] = new TaskBuilder($this, new TaskSchema);
         $this->tasks[$name]->handler($handler);
         return $this->tasks[$name];
     }
 
-    protected function addTask(string $name, array $config)
+    public function getTasks(): array
     {
-        // @todo handle validation
-        $this->tasks[$name] = $config;
+        return $this->tasks;
     }
 
     public function machine(string $name): MachineBuilder
@@ -42,17 +41,24 @@ class TaskMachineBuilder implements TaskMachineBuilderInterface
         return $this->machines[$name];
     }
 
-    protected function addMachine(string $name, array $config)
+    public function getMachines(): array
     {
-        // @todo handle validation
-        $this->machines[$name] = $config;
+        return $this->machines;
     }
 
-    public function build(array $defaults = []): TaskMachineInterface
+    public function merge(TaskMachineBuilderInterface $builder): TaskMachineBuilderInterface
+    {
+        $this->tasks = array_merge($this->tasks, $builder->getTasks());
+        $this->machines = array_merge($this->machines, $builder->getMachines());
+
+        return $this;
+    }
+
+    public function build(): TaskMachineInterface
     {
         foreach ($this->machines as $name => $config) {
             if ($config instanceof MachineBuilder) {
-                $result = $config->buildConfig($defaults);
+                $result = $config->_build();
                 if ($result instanceof Error) {
                     throw new ConfigError('Invalid taskmachine configuration given: '.print_r($result->unwrap(), true));
                 }
@@ -73,7 +79,7 @@ class TaskMachineBuilder implements TaskMachineBuilderInterface
 
             $taskConfig = $this->tasks[$name];
             if ($taskConfig instanceof TaskBuilder) {
-                $result = $this->tasks[$name]->build();
+                $result = $this->tasks[$name]->_build();
                 if ($result instanceof Error) {
                     throw new ConfigError('Invalid task configuration given: '.print_r($result->unwrap(), true));
                 }

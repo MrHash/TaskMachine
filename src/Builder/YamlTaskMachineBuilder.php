@@ -26,20 +26,15 @@ class YamlTaskMachineBuilder extends TaskMachineBuilder
         parent::__construct($factory);
     }
 
-    public function build(array $defaults = []): TaskMachineInterface
+    public function build(): TaskMachineInterface
     {
         foreach ($this->yamlFilePaths as $yamlFilePath) {
             $data = array_replace_recursive($this->parser->parse(file_get_contents($yamlFilePath)), $data ?? []);
         }
 
-        foreach ($data['tasks'] ?? [] as $name => $config) {
-            $this->addTask($name, $config);
-        }
+        $this->tasks = array_merge($this->tasks, $data['tasks'] ?? []);
+        $this->machines = array_merge($this->machines, $data['machines'] ?? []);
 
-        foreach ($data['machines'] ?? [] as $name => $config) {
-            $this->addMachine($name, $config);
-        }
-
-        return parent::build($defaults);
+        return parent::build();
     }
 }

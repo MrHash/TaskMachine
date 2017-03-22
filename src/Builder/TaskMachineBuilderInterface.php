@@ -10,5 +10,5 @@ interface TaskMachineBuilderInterface
 
     public function machine(string $name): MachineBuilder;
 
-    public function build(array $defaults = []): TaskMachineInterface;
+    public function build(): TaskMachineInterface;
 }
