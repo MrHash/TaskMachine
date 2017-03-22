@@ -73,13 +73,14 @@ class TaskMachineBuilder implements TaskMachineBuilderInterface
     private function mergeMachineTasks(array $schema): array
     {
         foreach ($schema as $name => $config) {
-            if (!isset($this->tasks[$name])) {
-                throw new ConfigError("Task definition for '$name' not found");
+            $alias = $config['alias'] ?? $name;
+            if (!isset($this->tasks[$alias])) {
+                throw new ConfigError("Task definition for '$alias' not found");
             }
 
-            $taskConfig = $this->tasks[$name];
+            $taskConfig = $this->tasks[$alias];
             if ($taskConfig instanceof TaskBuilder) {
-                $result = $this->tasks[$name]->_build();
+                $result = $this->tasks[$alias]->_build();
                 if ($result instanceof Error) {
                     throw new ConfigError('Invalid task configuration given: '.print_r($result->unwrap(), true));
                 }

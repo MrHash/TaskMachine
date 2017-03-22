@@ -98,6 +98,7 @@ final class MachineSchema implements SchemaInterface
             "type" => "assoc" ,
             "required" => false,
             "properties" => [
+                "alias" => [ "type" => "string", "required" => false ],
                 "handler" => [ "type" => "any", 'required' => false ], // @todo callable, object or null
                 "initial" => [ "type" => "bool", "required" => false ],
                 "final" => [ "type" => "bool", "required" => false ],
