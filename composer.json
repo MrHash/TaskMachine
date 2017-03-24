@@ -3,7 +3,7 @@
     "type": "library",
     "description": "Modular micro-service task pipelining & orchestration with validated state machine integrity.",
     "keywords": ["modular", "micro service", "task", "pipeline", "state machine", "fsm", "auryn", "php", "orchestration"],
-    "license": "MPL-2.0",
+    "license": "MPL2",
     "require": {
         "php": "^7.0",
         "shrink0r/workflux": "dev-master",
