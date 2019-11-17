@@ -406,12 +406,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/MrHash/workflux.git",
-                "reference": "cf5f02444ba2fe8adef86ccc9a9e3fd37119a7f7"
+                "reference": "37aa9c8626176845775a2bd598272ae7873497e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MrHash/workflux/zipball/cf5f02444ba2fe8adef86ccc9a9e3fd37119a7f7",
-                "reference": "cf5f02444ba2fe8adef86ccc9a9e3fd37119a7f7",
+                "url": "https://api.github.com/repos/MrHash/workflux/zipball/37aa9c8626176845775a2bd598272ae7873497e3",
+                "reference": "37aa9c8626176845775a2bd598272ae7873497e3",
                 "shasum": ""
             },
             "archive": {
@@ -499,7 +499,7 @@
                 "irc": "irc://irc.freenode.org/honeybee",
                 "source": "https://github.com/shrink0r/workflux"
             },
-            "time": "2019-11-17T15:44:39+00:00"
+            "time": "2019-11-17T17:01:59+00:00"
         },
         {
             "name": "symfony/cache",

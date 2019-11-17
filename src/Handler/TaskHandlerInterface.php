@@ -6,5 +6,5 @@ use Workflux\Param\InputInterface;
 
 interface TaskHandlerInterface
 {
-    public function execute(InputInterface $input): array;
+    public function handle(InputInterface $input): array;
 }

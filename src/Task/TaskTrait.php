@@ -103,7 +103,7 @@ trait TaskTrait
     {
         $handler = $this->getSetting('_handler');
         $input = $input->withParams($this->settings->withoutParams(['_handler', '_map'])->toArray());
-        return $handler->execute($input);
+        return $handler->handle($input);
     }
 
     private function evaluateOutputMapping(InputInterface $input, OutputInterface $output): array

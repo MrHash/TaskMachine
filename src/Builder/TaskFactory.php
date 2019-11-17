@@ -169,14 +169,14 @@ final class TaskFactory implements FactoryInterface
     /** @param string|callable|TaskHandlerInterface $handler */
     private function resolveHandler($handler): TaskHandlerInterface
     {
-        if (is_string($handler) && class_exists($handler)) {
-            return $this->injector->make($handler);
-        } elseif ($handler instanceof TaskHandlerInterface) {
+        if ($handler instanceof TaskHandlerInterface) {
             return $handler;
         } elseif (is_callable($handler)) {
             return new CallableTaskHandler($this->injector, $handler);
+        } elseif (class_exists($handler)) {
+            return $this->injector->make($handler);
         }
 
-        throw new \InvalidArgumentException('Handler is not valid or not found.');
+        throw new ConfigError('Handler is not valid or not found.');
     }
 }

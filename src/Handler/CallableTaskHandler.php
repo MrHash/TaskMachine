@@ -20,12 +20,12 @@ class CallableTaskHandler implements TaskHandlerInterface
         $this->handler = $handler;
     }
 
-    public function execute(InputInterface $input): array
+    public function handle(InputInterface $input): array
     {
         $this->injector->share($input)->alias(InputInterface::class, Input::class);
         $output = $this->injector->execute($this->handler);
         return $output instanceof InputInterface
-            ? $output->getParams()
+            ? $output->withoutParams(['_handler', '_map'])->getParams()
             : (array)$output;
     }
 }
