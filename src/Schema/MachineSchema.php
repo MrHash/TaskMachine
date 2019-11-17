@@ -84,7 +84,7 @@ final class MachineSchema implements SchemaInterface
             'type' => 'assoc' ,
             'required' => false,
             'properties' => [
-                'alias' => [ 'type' => 'string', 'required' => false ],
+                'task' => [ 'type' => 'string', 'required' => false ],
                 'handler' => [ 'type' => 'any', 'required' => false ], // @todo callable, object or null
                 'initial' => [ 'type' => 'bool', 'required' => false ],
                 'final' => [ 'type' => 'bool', 'required' => false ],
@@ -103,11 +103,11 @@ final class MachineSchema implements SchemaInterface
                         ':any_name:' => [ 'type' => 'any' ]
                     ]
                 ],
-                'transition' =>  [
+                'transition' => [
                     'type' => 'any', //@todo array or string
                     'required' => false //@todo required
                 ],
-                'validate' =>  [
+                'validate' => [
                     'type' => 'assoc',
                     'required' => false,
                     'properties' => [
