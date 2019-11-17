@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace TaskMachine\Task;
 
@@ -12,54 +12,35 @@ use Workflux\State\ValidatorInterface;
 
 trait TaskTrait
 {
-    /**
-     * @var string $name
-     */
+    /** @var string */
     private $name;
 
-    /**
-     * @var ParamHolderInterface $settings
-     */
+    /** @var ParamHolderInterface */
     private $settings;
 
-    /**
-     * @var ValidatorInterface $schemas
-     */
+    /** @var ValidatorInterface */
     private $validator;
 
-    /**
-     * @var ExpressionLanguage $expression_engine
-     */
-    private $expression_engine;
+    /** @var ExpressionLanguage */
+    private $expressionEngine;
 
-    /**
-     * @param string $name
-     * @param ParamHolderInterface $settings
-     * @param ValidatorInterface $validator
-     * @param ExpressionLanguage $expression_engine
-     */
     public function __construct(
         string $name,
         ParamHolderInterface $settings,
         ValidatorInterface $validator,
-        ExpressionLanguage $expression_engine
+        ExpressionLanguage $expressionEngine
     ) {
         $this->name = $name;
         $this->settings = $settings;
         $this->validator = $validator;
-        $this->expression_engine = $expression_engine;
-        foreach ($this->getRequiredSettings() as $setting_name) {
-            if (!$this->settings->has($setting_name)) {
-                throw new ConfigError("Trying to configure state '$name' without required setting '$setting_name'.");
+        $this->expressionEngine = $expressionEngine;
+        foreach ($this->getRequiredSettings() as $settingName) {
+            if (!$this->settings->has($settingName)) {
+                throw new ConfigError("Trying to configure state '$name' without required setting '$settingName'.");
             }
         }
     }
 
-    /**
-     * @param InputInterface $input
-     *
-     * @return OutputInterface
-     */
     public function execute(InputInterface $input): OutputInterface
     {
         $input = $input->withParams($this->settings->toArray());
@@ -69,70 +50,42 @@ trait TaskTrait
         return $output;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return bool
-     */
     public function isInitial(): bool
     {
         return false;
     }
 
-    /**
-     * @return bool
-     */
     public function isFinal(): bool
     {
         return false;
     }
 
-    /**
-     * @return bool
-     */
     public function isInteractive(): bool
     {
         return false;
     }
 
-     /**
-     * @return ValidatorInterface
-     */
     public function getValidator(): ValidatorInterface
     {
         return $this->validator;
     }
 
-    /**
-     * @param string $name
-     * @param mixed $default
-     *
-     * @return mixed
-     */
+    /** @return mixed */
     public function getSetting(string $name, $default = null)
     {
         return $this->settings->get($name) ?? $default;
     }
 
-    /**
-     * @return ParamHolderInterface
-     */
     public function getSettings(): ParamHolderInterface
     {
         return $this->settings;
     }
 
-    /**
-     * @param InputInterface $input
-     *
-     * @return OutputInterface
-     */
     private function generateOutput(InputInterface $input): OutputInterface
     {
         $output = $this->generateOutputParams($input);
@@ -146,11 +99,6 @@ trait TaskTrait
         );
     }
 
-    /**
-     * @param  InputInterface $input
-     *
-     * @return mixed[]
-     */
     private function generateOutputParams(InputInterface $input): array
     {
         $handler = $this->getSetting('_handler');
@@ -158,10 +106,10 @@ trait TaskTrait
         return $handler->execute($input);
     }
 
-    private function evaluateOutputMapping(InputInterface $input, OutputInterface $output)
+    private function evaluateOutputMapping(InputInterface $input, OutputInterface $output): array
     {
         foreach ($this->getSetting('_map', []) as $expression => $key) {
-            $mappedOutput[$key] = $this->expression_engine->evaluate(
+            $mappedOutput[$key] = $this->expressionEngine->evaluate(
                 $expression,
                 ['input' => $input, 'output' => $output]
             );
@@ -169,9 +117,6 @@ trait TaskTrait
         return $mappedOutput ?? [];
     }
 
-    /**
-     * @return string[]
-     */
     private function getRequiredSettings(): array
     {
         return [];

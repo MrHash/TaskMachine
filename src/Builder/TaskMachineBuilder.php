@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace TaskMachine\Builder;
 
@@ -12,10 +12,13 @@ use Workflux\Error\ConfigError;
 
 class TaskMachineBuilder implements TaskMachineBuilderInterface
 {
+    /** @var FactoryInterface */
     protected $factory;
 
+    /** @var array */
     protected $tasks = [];
-
+    
+    /** @var array */
     protected $machines = [];
 
     public function __construct(FactoryInterface $factory = null)

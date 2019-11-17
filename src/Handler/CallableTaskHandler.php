@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace TaskMachine\Handler;
 
@@ -8,20 +8,24 @@ use Workflux\Param\Input;
 
 class CallableTaskHandler implements TaskHandlerInterface
 {
-    private $handler;
-
+    /** @var Injector */
     private $injector;
 
-    public function __construct($handler, Injector $injector)
+    /** @var callable */
+    private $handler;
+
+    public function __construct(Injector $injector, callable $handler)
     {
-        $this->handler = $handler;
         $this->injector = $injector;
+        $this->handler = $handler;
     }
 
     public function execute(InputInterface $input): array
     {
         $this->injector->share($input)->alias(InputInterface::class, Input::class);
         $output = $this->injector->execute($this->handler);
-        return (array) $output;
+        return $output instanceof InputInterface
+            ? $output->getParams()
+            : (array)$output;
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace TaskMachine;
 
@@ -10,8 +10,10 @@ use Workflux\Param\OutputInterface;
 
 class TaskMachine implements TaskMachineInterface
 {
+    /** @var array */
     private $schemas;
 
+    /** @var FactoryInterface */
     private $factory;
 
     public function __construct(array $schemas, FactoryInterface $factory = null)

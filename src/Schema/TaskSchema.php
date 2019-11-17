@@ -1,23 +1,22 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace TaskMachine\Schema;
 
 use Shrink0r\PhpSchema\Factory;
 use Shrink0r\PhpSchema\FactoryInterface;
+use Shrink0r\PhpSchema\Property\PropertyInterface;
 use Shrink0r\PhpSchema\ResultInterface;
 use Shrink0r\PhpSchema\Schema;
 use Shrink0r\PhpSchema\SchemaInterface;
 
 final class TaskSchema implements SchemaInterface
 {
-    /**
-     * @var SchemaInterface $internal_schema
-     */
-    private $internal_schema;
+    /** @var SchemaInterface */
+    private $internalSchema;
 
     public function __construct()
     {
-        $this->internal_schema = new Schema('task', [
+        $this->internalSchema = new Schema('task', [
             'type' => 'assoc',
             'properties' => [
                 "handler" => [ "type" => "any" ],
@@ -35,33 +34,24 @@ final class TaskSchema implements SchemaInterface
     /**
      * Verify that the given data is structured according to the scheme.
      *
-     * @param mixed[] $data
-     *
      * @return ResultInterface Returns Ok on success; otherwise Error.
      */
     public function validate(array $data): ResultInterface
     {
-        return $this->internal_schema->validate($data);
+        return $this->internalSchema->validate($data);
     }
 
-    /**
-     * Returns the schema's name.
-     *
-     * @return string
-     */
     public function getName(): string
     {
-        return $this->internal_schema->getName();
+        return $this->internalSchema->getName();
     }
 
     /**
      * Returns the schema type. Atm only 'assoc' is supported.
-     *
-     * @return string
      */
     public function getType(): string
     {
-        return $this->internal_schema->getType();
+        return $this->internalSchema->getType();
     }
 
     /**
@@ -71,26 +61,24 @@ final class TaskSchema implements SchemaInterface
      */
     public function getCustomTypes(): array
     {
-        return $this->internal_schema->getCustomTypes();
+        return $this->internalSchema->getCustomTypes();
     }
 
     /**
      * Returns the schema's properties.
      *
-     * @return Property\PropertyInterface[]
+     * @return PropertyInterface[]
      */
     public function getProperties(): array
     {
-        return $this->internal_schema->getProperties();
+        return $this->internalSchema->getProperties();
     }
 
     /**
      * Returns the factory, that is used by the schema.
-     *
-     * @return FactoryInterface
      */
     public function getFactory(): FactoryInterface
     {
-        return $this->internal_schema->getFactory();
+        return $this->internalSchema->getFactory();
     }
 }

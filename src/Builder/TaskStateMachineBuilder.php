@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace TaskMachine\Builder;
 
@@ -15,25 +15,15 @@ use Workflux\StateMachineInterface;
 
 class TaskStateMachineBuilder implements StateMachineBuilderInterface
 {
-    /**
-     * @var string $name
-     */
+    /** @var string */
     private $name;
 
-    /**
-     * @var mixed[] $config
-     */
+    /** @var array */
     private $config;
 
-    /**
-     * @var FactoryInterface $factory
-     */
+    /** @var FactoryInterface */
     private $factory;
 
-    /**
-     * @param array $config
-     * @param FactoryInterface|null $factory
-     */
     public function __construct(string $name, array $config, FactoryInterface $factory = null)
     {
         $this->name = $name;
@@ -41,9 +31,6 @@ class TaskStateMachineBuilder implements StateMachineBuilderInterface
         $this->factory = $factory ?? new Factory;
     }
 
-    /**
-     * @return StateMachineInterface
-     */
     public function build(): StateMachineInterface
     {
         $result = (new MachineSchema)->validate($this->config);
@@ -51,35 +38,30 @@ class TaskStateMachineBuilder implements StateMachineBuilderInterface
             throw new ConfigError('Invalid taskmachine configuration given: '.print_r($result->unwrap(), true));
         }
         list($tasks, $transitions) = $this->realizeConfig($this->config);
-        $state_machine_class = Maybe::unit($this->config)->class->get() ?? StateMachine::CLASS;
-        return (new StateMachineBuilder($state_machine_class))
+        $stateMachineClass = Maybe::unit($this->config)->class->get() ?? StateMachine::class;
+        return (new StateMachineBuilder($stateMachineClass))
             ->addStateMachineName($this->name)
             ->addStates($tasks)
             ->addTransitions($transitions)
             ->build();
     }
 
-    /**
-     * @param  mixed[] $config
-     *
-     * @return mixed[]
-     */
     private function realizeConfig(array $config): array
     {
         $tasks = [];
         $transitions = [];
-        foreach ($config as $name => $state_config) {
-            $tasks[] = $this->factory->createState($name, $state_config);
-            if (!is_array($state_config)) {
+        foreach ($config as $name => $stateConfig) {
+            $tasks[] = $this->factory->createState($name, $stateConfig);
+            if (!is_array($stateConfig)) {
                 continue;
             }
-            foreach ((array)($state_config['transition'] ?? []) as $transition_config => $key) {
-                if (is_string($transition_config)) {
-                    $transition_config = [ 'when' => $transition_config ];
+            foreach ((array)($stateConfig['transition'] ?? []) as $transitionConfig => $to) {
+                if (is_string($transitionConfig)) {
+                    $transitionConfig = ['when' => $transitionConfig];
                 }
-                $transitions[] = $this->factory->createTransition($name, $key, $transition_config ?: null);
+                $transitions[] = $this->factory->createTransition($name, $to, $transitionConfig ?: null);
             }
         }
-        return [ $tasks, $transitions ];
+        return [$tasks, $transitions];
     }
 }

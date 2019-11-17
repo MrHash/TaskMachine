@@ -4,16 +4,22 @@
     "description": "Modular micro-service task pipelining & orchestration with validated state machine integrity.",
     "keywords": ["modular", "micro service", "task", "pipeline", "state machine", "fsm", "auryn", "php", "orchestration"],
     "license": "MPL2",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/MrHash/workflux"
+        }
+    ],
     "require": {
         "php": "^7.0",
-        "shrink0r/workflux": "dev-master",
-        "shrink0r/php-schema": "dev-master as 0.3",
-        "rdlowrey/auryn": "~1",
-        "symfony/yaml": "~2|~3"
+        "shrink0r/workflux": "master@dev",
+        "rdlowrey/auryn": "^1",
+        "symfony/yaml": ">=2"
     },
     "require-dev": {
-        "phpunit/phpunit": "~5",
-        "squizlabs/php_codesniffer": "~2"
+        "phpunit/phpunit": ">=7",
+        "squizlabs/php_codesniffer": ">=2",
+        "vimeo/psalm": ">=2"
     },
     "prefer-stable": true,
     "minimum-stability": "dev",
@@ -27,8 +33,23 @@
             "TaskMachine\\Tests\\": "tests/"
         }
     },
+    "archive": {
+        "exclude": [
+            "/build",
+            "/vendor"
+        ]
+    },
     "scripts": {
-        "sniff": "vendor/bin/phpcs --extensions=php --standard=psr2 src tests",
-        "test": "vendor/bin/phpunit"
+        "code-sniffer": "phpcs -p -s --extensions=php --standard='PSR1,PSR2' src tests",
+        "code-sniffer-autofix": "phpcbf --standard=PSR2 -d tabWidth=4 src tests",
+        "sniff": [
+            "@code-sniffer",
+            "@validate-json",
+            "psalm"
+        ],
+        "tests": ["@unit-test"],
+        "unit-test": "phpunit --no-coverage",
+        "validate-deps": "composer validate --with-dependencies --strict",
+        "validate-json": "composer validate --no-check-all --no-check-lock"
     }
 }

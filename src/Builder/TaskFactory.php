@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace TaskMachine\Builder;
 
@@ -7,7 +7,6 @@ use Ds\Map;
 use Shrink0r\Monatic\Maybe;
 use Shrink0r\PhpSchema\Factory as PhpSchemaFactory;
 use Shrink0r\PhpSchema\Schema;
-use Shrink0r\PhpSchema\SchemaInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use TaskMachine\Handler\CallableTaskHandler;
 use TaskMachine\Handler\TaskHandlerInterface;
@@ -32,101 +31,74 @@ final class TaskFactory implements FactoryInterface
 
     const SUFFIX_OUT = '-output_schema';
 
-    /**
-     * @var mixed[] $default_classes
-     */
-    private static $default_classes = [
-        'initial' => InitialTask::CLASS,
-        'interactive' => InteractiveTask::CLASS,
-        'task' => Task::CLASS,
-        'final' => FinalTask::CLASS,
-        'transition' => Transition::CLASS
+    /** @var array */
+    private static $defaultClasses = [
+        'initial' => InitialTask::class,
+        'interactive' => InteractiveTask::class,
+        'task' => Task::class,
+        'final' => FinalTask::class,
+        'transition' => Transition::class
     ];
 
-    /**
-     * @var mixed[] $default_validation_schema
-     */
-    private static $default_validation_schema = [':any_name:' => ['type' => 'any']];
+    /** @var array */
+    private static $defaultValidationSchema = [':any_name:' => ['type' => 'any']];
 
-    /**
-     * @var Injector $injector
-     */
+    /** @var Injector */
     private $injector;
 
-    /**
-     * @var mixed[] $class_map
-     */
-    private $class_map;
+    /** @var Map */
+    private $classMap;
 
-    /**
-     * @var ExpressionLanguage $expression_engine
-     */
-    private $expression_engine;
+    /** @var ExpressionLanguage */
+    private $expressionEngine;
 
-    /**
-     * @param array $class_map
-     * @param ExpressionLanguage|null $expression_engine
-     */
     public function __construct(
         Injector $injector = null,
-        array $class_map = [],
-        ExpressionLanguage $expression_engine = null
+        array $classMap = [],
+        ExpressionLanguage $expressionEngine = null
     ) {
         $this->injector = $injector ?? new Injector;
-        $this->expression_engine = $expression_engine ?? new ExpressionLanguage;
-        $this->class_map = new Map(array_merge(self::$default_classes, $class_map));
+        $this->expressionEngine = $expressionEngine ?? new ExpressionLanguage;
+        $this->classMap = new Map(array_merge(self::$defaultClasses, $classMap));
     }
 
-    /**
-     * @param string $name
-     * @param mixed[]|null $state
-     *
-     * @return StateInterface
-     */
     public function createState(string $name, array $state = null): StateInterface
     {
         $state = Maybe::unit($state);
-        $state_implementor = $this->resolveStateImplementor($state);
+        $stateImplementor = $this->resolveStateImplementor($state);
         $settings = $state->input->get() ?? [];
         $settings['_map'] = $state->map->get() ?? [];
         $settings['_handler'] = $this->resolveHandler($state->handler->get());
-        $state_instance = new $state_implementor(
+        $stateInstance = new $stateImplementor(
             $name,
             new Settings($settings),
             $this->createValidator($name, $state),
-            $this->expression_engine
+            $this->expressionEngine
         );
-        if ($state->final->get() && !$state_instance->isFinal()) {
+        if ($state->final->get() && !$stateInstance->isFinal()) {
             throw new ConfigError("Trying to provide custom state that isn't final but marked as final in config.");
         }
-        if ($state->initial->get() && !$state_instance->isInitial()) {
+        if ($state->initial->get() && !$stateInstance->isInitial()) {
             throw new ConfigError("Trying to provide custom state that isn't initial but marked as initial in config.");
         }
-        if ($state->interactive->get() && !$state_instance->isInteractive()) {
+        if ($state->interactive->get() && !$stateInstance->isInteractive()) {
             throw new ConfigError(
                 "Trying to provide custom state that isn't interactive but marked as interactive in config."
             );
         }
-        return $state_instance;
+        return $stateInstance;
     }
 
-    /**
-     * @param string $from
-     * @param string $to
-     * @param  mixed[]|null $transition
-     *
-     * @return TransitionInterface
-     */
     public function createTransition(string $from, string $to, array $config = null): TransitionInterface
     {
         $transition = Maybe::unit($config);
         if (is_string($transition->when->get())) {
             $config['when'] = [ $transition->when->get() ];
         }
-        $implementor = $transition->class->get() ?? $this->class_map->get('transition');
-        if (!in_array(TransitionInterface::CLASS, class_implements($implementor))) {
+        $implementor = $transition->class->get() ?? $this->classMap->get('transition');
+        if (!in_array(TransitionInterface::class, class_implements($implementor))) {
             throw new MissingImplementation(
-                'Trying to create transition without implementing required '.TransitionInterface::CLASS
+                'Trying to create transition without implementing required '.TransitionInterface::class
             );
         }
         $constraints = [];
@@ -134,62 +106,45 @@ final class TaskFactory implements FactoryInterface
             if (!is_string($expression)) {
                 continue;
             }
-            $constraints[] = new ExpressionConstraint($expression, $this->expression_engine);
+            $constraints[] = new ExpressionConstraint($expression, $this->expressionEngine);
         }
         $settings = new Settings(Maybe::unit($config)->settings->get() ?? []);
         return new $implementor($from, $to, $settings, $constraints);
     }
 
-    /**
-     * @param Maybe $state
-     *
-     * @return string
-     */
     private function resolveStateImplementor(Maybe $state): string
     {
         switch (true) {
             case $state->initial->get():
-                $state_implementor = $this->class_map->get('initial');
+                $stateImplementor = $this->classMap->get('initial');
                 break;
             case $state->final->get() === true || $state->get() === null: // cast null to final-state by convention
-                $state_implementor = $this->class_map->get('final');
+                $stateImplementor = $this->classMap->get('final');
                 break;
             case $state->interactive->get():
-                $state_implementor = $this->class_map->get('interactive');
+                $stateImplementor = $this->classMap->get('interactive');
                 break;
             default:
-                $state_implementor = $this->class_map->get('task');
+                $stateImplementor = $this->classMap->get('task');
         }
-        $state_implementor = $state->class->get() ?? $state_implementor;
-        if (!in_array(StateInterface::CLASS, class_implements($state_implementor))) {
+        $stateImplementor = $state->class->get() ?? $stateImplementor;
+        if (!in_array(StateInterface::class, class_implements($stateImplementor))) {
             throw new MissingImplementation(
-                'Trying to use a custom task that does not implement required '.StateInterface::CLASS
+                'Trying to use a custom task that does not implement required '.StateInterface::class
             );
         }
-        return $state_implementor;
+        return $stateImplementor;
     }
 
-    /**
-     * @param string $name
-     * @param Maybe $state
-     *
-     * @return ValidatorInterface
-     */
     private function createValidator(string $name, Maybe $state): ValidatorInterface
     {
         return new Validator(...$this->createValidationSchemas($name, (array)$state->validate->get()));
     }
 
-    /**
-     * @param string $name
-     * @param array $validation
-     *
-     * @return SchemaInterface[]
-     */
     private function createValidationSchemas(string $name, array $validation = []): array
     {
-        $inputSchema = self::$default_validation_schema;
-        $outputSchema = self::$default_validation_schema;
+        $inputSchema = self::$defaultValidationSchema;
+        $outputSchema = self::$defaultValidationSchema;
 
         foreach ($validation as $expression => $type) {
             $path = explode('.', $expression);
@@ -211,19 +166,17 @@ final class TaskFactory implements FactoryInterface
         ];
     }
 
-    /**
-     * @param mixed $handler
-     *
-     * @return TaskHandlerInterface
-     */
+    /** @param string|callable|TaskHandlerInterface $handler */
     private function resolveHandler($handler): TaskHandlerInterface
     {
         if (is_string($handler) && class_exists($handler)) {
             return $this->injector->make($handler);
         } elseif ($handler instanceof TaskHandlerInterface) {
             return $handler;
-        } else {
-            return new CallableTaskHandler($handler, $this->injector);
+        } elseif (is_callable($handler)) {
+            return new CallableTaskHandler($this->injector, $handler);
         }
+
+        throw new \InvalidArgumentException('Handler is not valid or not found.');
     }
 }

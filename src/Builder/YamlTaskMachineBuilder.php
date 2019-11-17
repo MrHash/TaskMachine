@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace TaskMachine\Builder;
 
@@ -9,8 +9,10 @@ use Workflux\Error\ConfigError;
 
 class YamlTaskMachineBuilder extends TaskMachineBuilder
 {
+    /** @var Parser */
     private $parser;
 
+    /** @var array */
     private $yamlFilePaths;
 
     public function __construct(array $yamlFilePaths, FactoryInterface $factory = null)

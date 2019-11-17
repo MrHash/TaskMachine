@@ -1,5 +1,24 @@
-.buildpath
-.project
-.settings
-vendor
-build
+# composer
+composer.phar
+/vendor/
+node_modules
+
+# testing artefacts
+build/
+data
+codeception.yml
+
+# general os and editors related stuff
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+*.tmp
+*.bak
+*.swp
+*~.nib
+nbproject/
+*.tmproj
+.idea
+.vscode
+.history

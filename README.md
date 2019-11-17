@@ -28,7 +28,7 @@ $tm = $tmb->machine('greetings')
     'transition' => 'goodbye'
   ])
    // specify a final task
-  ->goodbye(['final' => true'])
+  ->goodbye(['final' => true])
   ->build();
 
 // Run the machine.
@@ -45,14 +45,14 @@ $tmb = new TaskMachineBuilder(new TaskFactory($myInjector));
 $tmb->task(
   'translate',
   function (InputInterface $input, MyTranslationInterface $translator) {
-    // Auryn injects service fully constructed. Run your things.
+    // Auryn injects fully constructed dependencies. Run your things.
     $translation = $translator->translate($input->get('text'));
     return ['text' => $translation];
   }
 );
 
 // Input from previous task is injectable and immutable
-$tmb->task('echo', function(InputInterface $input) {
+$tmb->task('echo', function (InputInterface $input) {
   echo $input->get('text');
 });
 
@@ -64,9 +64,9 @@ $tmb->task('goodbye', function () {
 $tm = $tmb->machine('translator')
   ->translate([
     'initial' => true,
-    'transition' => 'echo
+    'transition' => 'echo'
   ])
-  ->echo([ 'transition' => 'goodbye' ])
+  ->echo(['transition' => 'goodbye'])
   ->goodbye(['final' => true])
   ->build();
 
@@ -75,7 +75,7 @@ $output = $tm->run('translator', ['text' => 'Hello World']);
 echo $output->get('closing');
 ```
 
->## Any faults in the configuration of your machine will result in a build error! Tasks must be linked together correctly and have valid unambiguous transitions.
+## Any faults in the configuration of your machine will result in a build error! Tasks must be linked together correctly and have valid unambiguous transitions.
 
 ## Conditional branching
 Machines can branch to different tasks based on conditions written in Symfony Expression Language.

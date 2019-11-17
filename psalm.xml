@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!--
+    @see https://github.com/vimeo/psalm/wiki/Configuration
+
+    use @psalm-suppress IssueName on a function's docblock to suppress Psalm issues e.g.
+
+    /**
+     * @psalm-suppress InvalidReturnType
+     */
+-->
+<psalm
+    name="Psalm configuration"
+    useDocblockTypes="true"
+    totallyTyped="false"
+    allowFileIncludes="true"
+    requireVoidReturnType="true"
+    useAssertForType="false"
+    rememberPropertyAssignmentsAfterCall="true"
+>
+    <projectFiles>
+        <directory name="src" />
+        <ignoreFiles>
+            <directory name="vendor" />
+        </ignoreFiles>
+    </projectFiles>
+
+    <issueHandlers>
+        <InvalidStringClass errorLevel="info" />
+        <LessSpecificReturnType errorLevel="info" />
+
+        <!-- level 3 issues - slightly lazy code writing, but provably low false-negatives -->
+
+        <DeprecatedMethod errorLevel="info" />
+
+        <MissingClosureReturnType errorLevel="info" />
+        <MissingReturnType errorLevel="error" />
+        <MissingPropertyType errorLevel="error" />
+        <InvalidDocblock errorLevel="error" />
+        <MisplacedRequiredParam errorLevel="info" />
+
+        <PropertyNotSetInConstructor errorLevel="info" />
+        <MissingConstructor errorLevel="info" />
+
+        <!-- level 4 issues - points to possible deficiencies in logic, higher false-positives -->
+
+        <MoreSpecificReturnType errorLevel="info" />
+        <TypeCoercion errorLevel="info" />
+
+        <PossiblyNullArgument errorLevel="info" />
+        <PossiblyNullArrayAccess errorLevel="info" />
+        <PossiblyNullOperand errorLevel="info" />
+        <PossiblyNullPropertyAssignment errorLevel="info" />
+        <PossiblyNullPropertyFetch errorLevel="info" />
+        <PossiblyNullReference errorLevel="info" />
+        <PossiblyUndefinedVariable errorLevel="info" />
+
+        <!-- level 5 issues - should be avoided at mosts costs... -->
+
+        <ForbiddenCode errorLevel="info" />
+        <ImplicitToStringCast errorLevel="info" />
+        <InvalidScalarArgument errorLevel="info" />
+        <InvalidToString errorLevel="info" />
+        <MethodSignatureMismatch errorLevel="info" />
+        <NoInterfaceProperties errorLevel="info" />
+        <TooManyArguments errorLevel="info" />
+        <TypeDoesNotContainType errorLevel="info" />
+    </issueHandlers>
+</psalm>

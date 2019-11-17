@@ -2,9 +2,9 @@
 
 namespace TaskMachine\Tests\Builder;
 
+use PHPUnit\Framework\TestCase;
 use Shrink0r\PhpSchema\FactoryInterface;
 use TaskMachine\Schema\MachineSchema;
-use TaskMachine\Tests\TestCase;
 
 final class MachineSchemaTest extends TestCase
 {
@@ -38,6 +38,6 @@ final class MachineSchemaTest extends TestCase
     public function testGetFactory()
     {
         $schema = new MachineSchema;
-        $this->assertInstanceOf(FactoryInterface::CLASS, $schema->getFactory());
+        $this->assertInstanceOf(FactoryInterface::class, $schema->getFactory());
     }
 }
